@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="as">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>অসমীয়া কেলেণ্ডাৰ - Assamese Calendar Mobile App</title>
+    <!-- Tailwind CSS for modern responsive mobile utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for sleek modern mobile icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Inter Font for ultimate readability -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        /* Mobile safe-area padding at bottom for notch phones */
+        .safe-bottom {
+            padding-bottom: calc(env(safe-area-inset-bottom) + 70px);
+        }
+        /* Traditional Gamusa border pattern */
+        .gamusa-border {
+            background: repeating-linear-gradient(
+                45deg,
+                #d21f3c,
+                #d21f3c 10px,
+                #ffffff 10px,
+                #ffffff 20px
+            );
+            height: 6px;
+            width: 100%;
+        }
+        .gamusa-pattern {
+            background-color: #ffffff;
+            background-image: radial-gradient(#d21f3c 1px, transparent 0), radial-gradient(#d21f3c 1px, #ffffff 0);
+            background-size: 16px 16px;
+            background-position: 0 0, 8px 8px;
+            opacity: 0.04;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* Hide scrollbars but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Bottom-sheet transition styles for a native mobile experience */
+        .bottom-sheet {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .bottom-sheet.hidden-sheet {
+            transform: translateY(100%);
+        }
+    </style>
+</head>
+<body class="bg-[#faf8f5] text-slate-800 min-h-screen flex flex-col transition-colors duration-300 overflow-x-hidden">
+
+    <!-- Gamusa Accent Top Bar -->
+    <div class="gamusa-border sticky top-0 z-50"></div>
+
+    <!-- App Top Bar (Header) -->
+    <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-[6px] z-40 border-b border-orange-50 px-4 py-3">
+        <div class="max-w-md mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <!-- SVG traditional Jaapi Icon (Compact & elegant) -->
+                <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center border border-red-100 shadow-sm">
+                    <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="45" fill="#fdfbf7" stroke="#d21f3c" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="30" stroke="#d4af37" stroke-width="2" stroke-dasharray="4 2"/>
+                        <path d="M50 15 L50 85 M15 50 L85 50 M25 25 L75 75 M25 75 L75 25" stroke="#d21f3c" stroke-width="1.5"/>
+                        <circle cx="50" cy="50" r="8" fill="#d21f3c"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-extrabold text-[#d21f3c] tracking-tight">অসমীয়া কেলেণ্ডাৰ</h1>
+                    <p class="text-[10px] text-amber-800 font-bold tracking-wide" id="header-years">
+                        ভাস্কৰাব্দ ১৪৩৩ | শকাব্দ ১৯৪৮
+                    </p>
+                </div>
+            </div>
+
+            <!-- Language and Quick Actions -->
+            <div class="flex items-center gap-2">
+                <button id="lang-btn" onclick="toggleLanguage()" class="px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-200 text-[#d21f3c] font-bold text-xs transition duration-150 shadow-xs flex items-center gap-1 active:scale-95">
+                    <i class="fa-solid fa-language"></i>
+                    <span id="lang-btn-text">English</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Scrollable App Container -->
+    <main class="flex-grow max-w-md w-full mx-auto px-4 pt-3 pb-8 safe-bottom relative z-10">
+
+        <!-- ==================== TAB 1: CALENDAR VIEW ==================== -->
+        <section id="tab-calendar" class="app-tab-panel space-y-4">
+            
+            <!-- Dynamic Month Selection Strip -->
+            <div class="bg-white rounded-2xl shadow-xs p-3.5 border border-orange-50 flex items-center justify-between">
+                <button onclick="navigateMonth(-1)" class="w-10 h-10 rounded-xl bg-slate-50 hover:bg-[#faf6f0] text-[#d21f3c] flex items-center justify-center transition active:scale-90">
+                    <i class="fa-solid fa-chevron-left text-base"></i>
+                </button>
+                
+                <div class="text-center">
+                    <h2 id="month-year-label" class="text-lg font-extrabold text-slate-800">January 2026</h2>
+                    <p id="as-month-label" class="text-xs text-amber-800 font-bold mt-0.5">পুহ - মাঘ (১৪৩২ ভাস্কৰাব্দ)</p>
+                </div>
+
+                <button onclick="navigateMonth(1)" class="w-10 h-10 rounded-xl bg-slate-50 hover:bg-[#faf6f0] text-[#d21f3c] flex items-center justify-center transition active:scale-90">
+                    <i class="fa-solid fa-chevron-right text-base"></i>
+                </button>
+            </div>
+
+            <!-- Traditional Assamese Proverb Box (Daily Touch of Culture) -->
+            <div class="bg-amber-50/50 rounded-2xl p-3 border border-amber-100/60 flex items-start gap-2.5">
+                <span class="text-base">💡</span>
+                <p id="cultural-proverb" class="text-xs text-amber-900 font-medium leading-relaxed italic">
+                    "ৰাইজ নহলে ৰজা নাই, গছ নহলে ছায়া নাই।"
+                </p>
+            </div>
+
+            <!-- Calendar Display Container -->
+            <div class="bg-white rounded-3xl shadow-sm border border-orange-50 overflow-hidden relative" id="calendar-swipe-zone">
+                <!-- Weekdays Header Row -->
+                <div class="grid grid-cols-7 bg-[#fefcf9] border-b border-orange-50/60 text-center py-2.5 text-[10px] md:text-xs font-bold text-amber-900/80" id="weekday-headers">
+                    <!-- Loaded dynamically in JS -->
+                </div>
+
+                <!-- Days Matrix Grid -->
+                <div class="grid grid-cols-7 gap-px bg-slate-100" id="calendar-grid">
+                    <!-- Days dynamically loaded -->
+                </div>
+            </div>
+
+            <!-- Today Button Quick Jump -->
+            <div class="flex justify-center">
+                <button onclick="jumpToToday()" class="px-5 py-2.5 bg-[#d21f3c] text-white rounded-full font-bold shadow-md shadow-red-600/10 hover:bg-red-700 transition duration-150 text-xs flex items-center gap-1.5 active:scale-95">
+                    <i class="fa-solid fa-location-crosshairs"></i>
+                    <span id="btn-today">আজি</span>
+                </button>
+            </div>
+
+            <!-- Highlighted Selected Day Panel -->
+            <div id="day-detail-box" class="bg-white rounded-2xl shadow-sm border border-orange-50 p-4 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-1.5 h-full bg-[#d21f3c]"></div>
+                
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="px-2 py-0.5 bg-red-100 text-[#d21f3c] rounded text-[10px] font-bold" id="detail-tag">নিৰ্বাচিত দিন</span>
+                            <span class="text-xs text-slate-500 font-semibold" id="detail-gregorian-date">June 1, 2026</span>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-800 mt-1.5" id="detail-title-as">১ আহাৰ, ভাস্কৰাব্দ ১৪৩৩</h3>
+                        <p class="text-amber-800 text-[11px] font-bold mt-1 flex items-center gap-2" id="detail-sub-info">
+                            <span><i class="fa-solid fa-moon"></i> শকাব্দ ১৯৪৮</span>
+                            <span>•</span>
+                            <span id="detail-day-name">সোমবাৰ</span>
+                        </p>
+                    </div>
+
+                    <!-- Add note trigger -->
+                    <button onclick="openNoteModal()" class="w-9 h-9 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-md active:scale-90 transition" title="Add Note">
+                        <i class="fa-solid fa-plus text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Event Details Area inside Daily View -->
+                <div class="mt-4 pt-3 border-t border-slate-100">
+                    <h4 class="text-[10px] font-bold uppercase text-slate-400 tracking-wider mb-2.5" id="events-header-label">দিনটোৰ কাৰ্যসূচী / বন্ধ বা টোকা</h4>
+                    <div id="day-events-list" class="space-y-2">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ==================== TAB 2: HOLIDAYS LIST ==================== -->
+        <section id="tab-holidays" class="app-tab-panel space-y-4 hidden">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-holly-berry text-[#d21f3c] text-lg"></i>
+                    <h3 class="text-lg font-extrabold text-slate-800" id="holiday-list-title">উৎসৱ আৰু বন্ধৰ দিন</h3>
+                </div>
+                <span class="px-2.5 py-1 bg-red-50 border border-red-100 text-[#d21f3c] text-[10px] font-extrabold rounded-full" id="holiday-count-badge">০ টা বন্ধ</span>
+            </div>
+
+            <!-- Search Bar for finding Holidays -->
+            <div class="relative">
+                <input type="text" id="holiday-search" oninput="filterHolidays()" placeholder="বন্ধৰ নাম লিখি বিচাৰক... / Search..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#d21f3c]/20 focus:border-[#d21f3c] bg-white">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+            </div>
+
+            <!-- List Container -->
+            <div class="space-y-2" id="festivals-container">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: DAILY HOROSCOPE ==================== -->
+        <section id="tab-horoscope" class="app-tab-panel space-y-4 hidden">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-star-and-crescent text-amber-500 text-lg"></i>
+                <h3 class="text-lg font-extrabold text-slate-800" id="rashifal-title">আজিৰ ৰাশিফল (Horoscope)</h3>
+            </div>
+
+            <!-- Compact grid for Rashi selects -->
+            <div class="grid grid-cols-4 gap-2" id="rashi-buttons-grid">
+                <!-- Loaded dynamically -->
+            </div>
+
+            <!-- Detailed horoscope display -->
+            <div class="bg-amber-50/50 rounded-2xl p-4 border border-amber-100/80">
+                <div class="flex items-center gap-2.5 mb-2">
+                    <span class="text-3xl" id="selected-rashi-icon">♈</span>
+                    <h4 class="font-extrabold text-[#d21f3c] text-sm" id="selected-rashi-name">মেষ (Aries)</h4>
+                </div>
+                <p class="text-xs md:text-sm text-slate-600 leading-relaxed font-medium" id="horoscope-text-content">
+                    পঢ়িবলৈ ৰাশিৰ ওপৰত ক্লিক কৰক।
+                </p>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: PERSONAL NOTES ==================== -->
+        <section id="tab-notes" class="app-tab-panel space-y-4 hidden">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-emerald-600 text-lg"></i>
+                    <h3 class="text-lg font-extrabold text-slate-800" id="saved-notes-title">সংৰক্ষিত টোকাসমূহ</h3>
+                </div>
+                <button onclick="openNoteModal()" class="px-3 py-1.5 bg-emerald-500 text-white text-xs font-bold rounded-lg flex items-center gap-1 active:scale-95 shadow-xs">
+                    <i class="fa-solid fa-plus"></i> <span id="add-note-action-text">নতুন</span>
+                </button>
+            </div>
+
+            <!-- Notes List scrollable container -->
+            <div class="space-y-3" id="all-notes-list">
+                <!-- Notes list saved -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- App Footer inside Main Shell (App branding only) -->
+    <footer class="bg-white border-t border-orange-100 py-5 text-center text-xs text-slate-500 relative overflow-hidden max-w-md mx-auto w-full mb-16">
+        <div class="gamusa-pattern"></div>
+        <div class="relative z-10 px-4 space-y-1.5">
+            <p class="font-bold text-amber-900" id="footer-copyright-text">
+                © ২০২৬ অসমীয়া কেলেণ্ডাৰ || AXOM HELP DESK
+            </p>
+            <p class="text-[10px] text-slate-400">
+                Powered by <a href="https://www.axomhelpdesk.com" target="_blank" class="text-[#d21f3c] hover:underline font-semibold">www.Axomhelpdesk.com</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Native App Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 shadow-[0_-3px_10px_rgba(0,0,0,0.03)] py-1.5 z-40 max-w-md mx-auto w-full flex justify-around">
+        <!-- Tab 1: Calendar -->
+        <button onclick="switchTab('calendar')" id="nav-calendar" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-[#d21f3c] transition duration-150">
+            <i class="fa-solid fa-calendar-days text-base mb-1"></i>
+            <span class="text-[9px] font-bold" id="nav-label-calendar">দিনপঞ্জী</span>
+        </button>
+
+        <!-- Tab 2: Holidays -->
+        <button onclick="switchTab('holidays')" id="nav-holidays" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-slate-400 transition duration-150">
+            <i class="fa-solid fa-holly-berry text-base mb-1"></i>
+            <span class="text-[9px] font-bold" id="nav-label-holidays">বন্ধৰ দিন</span>
+        </button>
+
+        <!-- Tab 3: Horoscope -->
+        <button onclick="switchTab('horoscope')" id="nav-horoscope" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-slate-400 transition duration-150">
+            <i class="fa-solid fa-star-and-crescent text-base mb-1"></i>
+            <span class="text-[9px] font-bold" id="nav-label-horoscope">ৰাশিফল</span>
+        </button>
+
+        <!-- Tab 4: Notes -->
+        <button onclick="switchTab('notes')" id="nav-notes" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-slate-400 transition duration-150">
+            <i class="fa-solid fa-book-bookmark text-base mb-1"></i>
+            <span class="text-[9px] font-bold" id="nav-label-notes">টোকা বহী</span>
+        </button>
+    </nav>
+
+    <!-- Native-style Bottom Sheet Modal (Slides up from the bottom) -->
+    <div id="note-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-end justify-center hidden z-50 transition-opacity duration-300 opacity-0">
+        <!-- Close overlay trigger -->
+        <div class="absolute inset-0" onclick="closeNoteModal()"></div>
+
+        <!-- Note Sheet Panel -->
+        <div id="note-sheet" class="bottom-sheet hidden-sheet bg-white rounded-t-3xl w-full max-w-md relative z-10 overflow-hidden shadow-2xl flex flex-col">
+            <div class="w-12 h-1 bg-slate-300 rounded-full mx-auto my-3"></div>
+            
+            <div class="px-5 pb-8 pt-2">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-slate-800" id="modal-note-title">নতুন টোকা লিখক</h3>
+                    <button onclick="closeNoteModal()" class="text-slate-400 hover:text-slate-600 p-1.5 bg-slate-50 rounded-full">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                </div>
+
+                <p class="text-[11px] text-amber-800 font-bold mb-4 bg-amber-50 p-2.5 rounded-xl border border-amber-100" id="modal-note-date-label">
+                    তাৰিখ: ১ জুন, ২০২৬
+                </p>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5" id="lbl-note-text">টোকাত কি লিখিব:</label>
+                        <textarea id="note-text-input" rows="3" class="w-full rounded-2xl border border-slate-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#d21f3c]/20 focus:border-[#d21f3c]" placeholder="ইয়াত লিখক..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2" id="lbl-note-tag">বিভাগ / কাৰ্যসূচী ৰং:</label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-1.5 cursor-pointer">
+                                <input type="radio" name="note-color" value="emerald" checked class="text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+                                <span class="w-5 h-5 rounded-full bg-emerald-500 border border-white outline outline-1 outline-emerald-200"></span>
+                            </label>
+                            <label class="flex items-center gap-1.5 cursor-pointer">
+                                <input type="radio" name="note-color" value="amber" class="text-amber-600 focus:ring-amber-500 w-4 h-4">
+                                <span class="w-5 h-5 rounded-full bg-amber-500 border border-white outline outline-1 outline-amber-200"></span>
+                            </label>
+                            <label class="flex items-center gap-1.5 cursor-pointer">
+                                <input type="radio" name="note-color" value="red" class="text-red-600 focus:ring-red-500 w-4 h-4">
+                                <span class="w-5 h-5 rounded-full bg-red-500 border border-white outline outline-1 outline-red-200"></span>
+                            </label>
+                            <label class="flex items-center gap-1.5 cursor-pointer">
+                                <input type="radio" name="note-color" value="blue" class="text-blue-600 focus:ring-blue-500 w-4 h-4">
+                                <span class="w-5 h-5 rounded-full bg-blue-500 border border-white outline outline-1 outline-blue-200"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 mt-6">
+                    <button onclick="closeNoteModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 font-bold text-xs text-slate-700 hover:bg-slate-50 transition" id="btn-cancel">বাতিল</button>
+                    <button onclick="saveNote()" class="flex-1 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 font-bold text-xs text-white shadow-md shadow-emerald-500/20 transition" id="btn-save">সংৰক্ষণ কৰক</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDate = new Date(); // Track currently explored month
+        let todayDate = new Date(); // Constant today reference
+        let selectedDate = new Date(); // Track day focused in the detail drawer
+        let currentLanguage = 'as'; // 'as' for Assamese, 'en' for English
+
+        // Load offline user note records from localStorage
+        let userNotes = JSON.parse(localStorage.getItem('axom_calendar_notes')) || {};
+
+        // Traditional Assamese Proverbs Database (Assamese / English versions)
+        const proverbs = [
+            { as: "“ৰাইজ নহলে ৰজা নাই, গছ নহলে ছায়া নাই।”", en: "“Without public there is no king, without trees there is no shade.”" },
+            { as: "“লাহে লাহে কাটিবা সূতা, খৰকৈ কাটিলে ছিঙিব কপালৰ ফুটা।”", en: "“Patience is bitter, but its fruit is sweet.”" },
+            { as: "“দহৰ লাঠি একৰ বোজা।”", en: "“Many hands make light work.”" },
+            { as: "“কুকুৰক লাই দিলে মূৰলৈ জাপ মাৰে।”", en: "“Give someone an inch and they will take a mile.”" },
+            { as: "“অধিক মাছে খাল খহে।”", en: "“Too many cooks spoil the broth.”" },
+            { as: "“আটাইতকৈ ডাঙৰ বল বুদ্ধি, বুদ্ধি থাকিলেহে জিনিবা সিদ্ধি।”", en: "“Wisdom is the greatest strength of all.”" }
+        ];
+
+        // Localization translations dictionary
+        const i18n = {
+            as: {
+                weekdays: ["দেও", "সোম", "মঙল", "বুধ", "বৃহস্পতি", "শুক্ৰ", "শনি"],
+                monthsEng: ["জানুৱাৰী", "ফেব্ৰুৱাৰী", "মাৰ্চ", "এপ্ৰিল", "মে", "জুন", "জুলাই", "আগষ্ট", "ছেপ্টেম্বৰ", "অক্টোবৰ", "নৱেম্বৰ", "ডিচেম্বৰ"],
+                monthsAs: ["ব'হাগ", "জেঠ", "আহাৰ", "শাওন", "ভাদ", "আহিন", "কাতি", "অঘোণ", "পুহ", "মাঘ", "ফাগুন", "চ'ত"],
+                todayBtn: "আজি",
+                festivalsBtn: "বন্ধৰ দিন",
+                rashifalBtn: "ৰাশিফল",
+                noteAdd: "টোকা যোগ কৰক",
+                selectedDayLabel: "নিৰ্বাচিত দিন",
+                eventsHeader: "দিনটোৰ কাৰ্যসূচী / বন্ধ বা টোকা",
+                horoscopeTitle: "আজিৰ ৰাশিফল",
+                noEvents: "আজি কোনো নিৰ্ধাৰিত উৎসৱ বা বন্ধৰ সূচী নাই।",
+                notePlaceholder: "ইয়াত লিখক...",
+                lblNoteText: "টোকাত কি লিখিব:",
+                lblNoteTag: "বিভাগ / ৰং:",
+                btnCancel: "বাতিল",
+                btnSave: "সংৰক্ষণ কৰক",
+                modalNoteTitle: "নতুন টোকা লিখক",
+                savedNotesTitle: "সংৰক্ষিত টোকাসমূহ",
+                holidayCount: "টা বন্ধৰ দিন",
+                eraHeader: "ভাস্কৰাব্দ {bYear} | শকাব্দ {sYear}",
+                navCalendar: "দিনপঞ্জী",
+                navHolidays: "বন্ধৰ দিন",
+                navHoroscope: "ৰাশিফল",
+                navNotes: "টোকা বহী",
+                addNoteAction: "নতুন"
+            },
+            en: {
+                weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                monthsEng: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                monthsAs: ["Bohag", "Jeth", "Ahar", "Xaon", "Bhado", "Ahin", "Kati", "Aghon", "Puh", "Magh", "Phagun", "Sot"],
+                todayBtn: "Today",
+                festivalsBtn: "Holidays",
+                rashifalBtn: "Horoscope",
+                noteAdd: "Add Note",
+                selectedDayLabel: "Selected Day",
+                eventsHeader: "Today's Schedule / Holidays & Notes",
+                horoscopeTitle: "Daily Horoscope",
+                noEvents: "No scheduled events or holidays for today.",
+                notePlaceholder: "Type something here...",
+                lblNoteText: "Note Content:",
+                lblNoteTag: "Category Color:",
+                btnCancel: "Cancel",
+                btnSave: "Save Note",
+                modalNoteTitle: "Create New Note",
+                savedNotesTitle: "Saved Notes",
+                holidayCount: " Holidays",
+                eraHeader: "Bhaskarabda {bYear} | Sakabda {sYear}",
+                navCalendar: "Calendar",
+                navHolidays: "Holidays",
+                navHoroscope: "Horoscope",
+                navNotes: "My Notes",
+                addNoteAction: "New"
+            }
+        };
+
+        // Assamese Numerals Converter
+        const asNumerals = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+        function toAssameseNumber(num) {
+            if (currentLanguage === 'en') return num.toString();
+            return num.toString().split('').map(digit => {
+                return !isNaN(parseInt(digit)) ? asNumerals[parseInt(digit)] : digit;
+            }).join('');
+        }
+
+        // Convert Gregorian date to traditional Assamese date (Approximation)
+        function convertToAssameseDate(gregDate) {
+            const year = gregDate.getFullYear();
+            const month = gregDate.getMonth() + 1;
+            const day = gregDate.getDate();
+
+            const transitions = [
+                { m: 1, d: 15, asMNameAs: "মাঘ", asMNameEn: "Magh", asYOffset: -594 }, 
+                { m: 2, d: 13, asMNameAs: "ফাগুন", asMNameEn: "Phagun", asYOffset: -594 },
+                { m: 3, d: 14, asMNameAs: "চ'ত", asMNameEn: "Sot", asYOffset: -594 },
+                { m: 4, d: 14, asMNameAs: "ব'হাগ", asMNameEn: "Bohag", asYOffset: -593 },
+                { m: 5, d: 15, asMNameAs: "জেঠ", asMNameEn: "Jeth", asYOffset: -593 },
+                { m: 6, d: 15, asMNameAs: "আহাৰ", asMNameEn: "Ahar", asYOffset: -593 },
+                { m: 7, d: 17, asMNameAs: "শাওন", asMNameEn: "Xaon", asYOffset: -593 },
+                { m: 8, d: 17, asMNameAs: "ভাদ", asMNameEn: "Bhado", asYOffset: -593 },
+                { m: 9, d: 17, asMNameAs: "আহিন", asMNameEn: "Ahin", asYOffset: -593 },
+                { m: 10, d: 18, asMNameAs: "কাতি", asMNameEn: "Kati", asYOffset: -593 },
+                { m: 11, d: 17, asMNameAs: "অঘোণ", asMNameEn: "Aghon", asYOffset: -593 },
+                { m: 12, d: 16, asMNameAs: "পুহ", asMNameEn: "Puh", asYOffset: -593 }
+            ];
+
+            let matched = null;
+
+            for (let i = transitions.length - 1; i >= 0; i--) {
+                const t = transitions[i];
+                if (month > t.m || (month === t.m && day >= t.d)) {
+                    matched = t;
+                    break;
+                }
+            }
+
+            if (!matched) {
+                const prevYear = year - 1;
+                const dec16 = new Date(prevYear, 11, 16);
+                const diffTime = Math.abs(gregDate - dec16);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                return {
+                    day: diffDays,
+                    monthAs: "পুহ",
+                    monthEn: "Puh",
+                    bhaskarabda: year - 594,
+                    sakabda: year - 78 - 1
+                };
+            }
+
+            const transitionDate = new Date(year, matched.m - 1, matched.d);
+            const diffTime = Math.abs(gregDate - transitionDate);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+            return {
+                day: diffDays,
+                monthAs: matched.asMNameAs,
+                monthEn: matched.asMNameEn,
+                bhaskarabda: year + matched.asYOffset,
+                sakabda: (month < 3 || (month === 3 && day < 22)) ? (year - 78 - 1) : (year - 78)
+            };
+        }
+
+        function formatDateToKey(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function getHolidaysForDate(date) {
+            const key = formatDateToKey(date);
+            return holidayDatabase.filter(h => h.dateStr === key);
+        }
+
+        // Comprehensive database of National, regional, and Assamese state holidays (2026)
+        const holidayDatabase = [
+            { dateStr: "2026-01-01", nameAs: "নতুন বছৰৰ প্ৰথম দিন", nameEn: "New Year's Day", type: "restricted" },
+            { dateStr: "2026-01-03", nameAs: "হজৰত আলীৰ জন্মদিন", nameEn: "Hazrat Ali's Birthday", type: "restricted" },
+            { dateStr: "2026-01-05", nameAs: "গুৰু গোবিন্দ সিং জয়ন্তী", nameEn: "Guru Gobind Singh Jayanti", type: "restricted" },
+            { dateStr: "2026-01-14", nameAs: "উৰুকা (ভোগালী বিহু) / পংগল", nameEn: "Uruka (Magh Bihu) / Pongal", type: "festival" },
+            { dateStr: "2026-01-15", nameAs: "ভোগালী বিহু / মাঘ বিহু", nameEn: "Bhogali Bihu / Magh Bihu", type: "gov-holiday" },
+            { dateStr: "2026-01-16", nameAs: "ভোগালী বিহুৰ অতিৰিক্ত বন্ধ", nameEn: "Magh Bihu Holiday", type: "gov-holiday" },
+            { dateStr: "2026-01-23", nameAs: "নেতাজী সুভাষ চন্দ্ৰ বসুৰ জন্মদিন / সৰস্বতী পূজা", nameEn: "Netaji Jayanti / Basant Panchami", type: "restricted" },
+            { dateStr: "2026-01-26", nameAs: "গণৰাজ্য দিৱস (ৰাষ্ট্ৰীয় বন্ধ)", nameEn: "Republic Day (National)", type: "gov-holiday" },
+            { dateStr: "2026-01-31", nameAs: "মে-ডাম-মে-ফী (Me-Dam-Me-Phi)", nameEn: "Me-Dam-Me-Phi", type: "gov-holiday" },
+            { dateStr: "2026-02-14", nameAs: "আলী আয়ে লৃগাং", nameEn: "Ali Aye Ligang", type: "restricted" },
+            { dateStr: "2026-02-15", nameAs: "মহা শিৱৰাত্ৰি", nameEn: "Maha Shivaratri", type: "gov-holiday" },
+            { dateStr: "2026-03-03", nameAs: "হোলিকা দহন / দ’ল যাত্ৰা", nameEn: "Holika Dahan / Dol Yatra", type: "festival" },
+            { dateStr: "2026-03-04", nameAs: "হোলী (Holi)", nameEn: "Holi", type: "gov-holiday" },
+            { dateStr: "2026-03-21", nameAs: "ঈদ-উল-ফিতৰ", nameEn: "Id-ul-Fitr", type: "gov-holiday" },
+            { dateStr: "2026-03-26", nameAs: "ৰাম নৱমী", nameEn: "Ram Navami", type: "gov-holiday" },
+            { dateStr: "2026-03-31", nameAs: "মহাবীৰ জয়ন্তী", nameEn: "Mahavir Jayanti", type: "gov-holiday" },
+            { dateStr: "2026-04-03", nameAs: "গুড ফ্ৰাইডে", nameEn: "Good Friday", type: "gov-holiday" },
+            { dateStr: "2026-04-13", nameAs: "গৰু বিহু (ৰঙালী বিহু)", nameEn: "Goru Bihu (Rongali Bihu)", type: "gov-holiday" },
+            { dateStr: "2026-04-14", nameAs: "মানুহ বিহু / আম্বেদকাৰ জয়ন্তী", nameEn: "Manuh Bihu / Ambedkar Jayanti", type: "gov-holiday" },
+            { dateStr: "2026-04-15", nameAs: "ৰঙালী বিহুৰ অতিৰিক্ত বন্ধ", nameEn: "Rongali Bihu Holiday", type: "gov-holiday" },
+            { dateStr: "2026-05-01", nameAs: "মে' দিৱস / বুদ্ধ পূৰ্ণিমা", nameEn: "May Day / Buddha Purnima", type: "gov-holiday" },
+            { dateStr: "2026-05-27", nameAs: "ঈদ-উল-জুহা / বকৰীদ", nameEn: "Id-ul-Zuha (Bakrid)", type: "gov-holiday" },
+            { dateStr: "2026-06-26", nameAs: "মহৰম (Muharram)", nameEn: "Muharram", type: "gov-holiday" },
+            { dateStr: "2026-07-16", nameAs: "ৰথ যাত্ৰা", nameEn: "Rath Yatra", type: "restricted" },
+            { dateStr: "2026-08-15", nameAs: " can’t-be-missed - স্বাধীনতা দিৱস", nameEn: "Independence Day (National)", type: "gov-holiday" },
+            { dateStr: "2026-08-26", nameAs: "মিলাদ-উন-নবী", nameEn: "Milad-un-Nabi", type: "gov-holiday" },
+            { dateStr: "2026-08-31", nameAs: "শ্ৰী শ্ৰী মাধৱদেৱৰ তিথি", nameEn: "Tithi of Madhavadeva", type: "gov-holiday" },
+            { dateStr: "2026-09-04", nameAs: "জন্মাষ্টমী (কৃষ্ণ জন্মাষ্টমী)", nameEn: "Janmashtami", type: "gov-holiday" },
+            { dateStr: "2026-09-12", nameAs: "শ্ৰীমন্ত শংকৰদেৱৰ তিথি", nameEn: "Tithi of Srimanta Sankardeva", type: "gov-holiday" },
+            { dateStr: "2026-10-02", nameAs: "গান্ধী জয়ন্তী (ৰাষ্ট্ৰীয় বন্ধ)", nameEn: "Gandhi Jayanti (National)", type: "gov-holiday" },
+            { dateStr: "2026-10-17", nameAs: "কাতি বিহু", nameEn: "Kati Bihu", type: "gov-holiday" },
+            { dateStr: "2026-10-18", nameAs: "দুৰ্গোৎসৱ (মহা সপ্তমী)", nameEn: "Durga Puja (Maha Saptami)", type: "gov-holiday" },
+            { dateStr: "2026-10-19", nameAs: "দুৰ্গোৎসৱ (মহা অষ্টমী)", nameEn: "Durga Puja (Maha Ashtami)", type: "gov-holiday" },
+            { dateStr: "2026-10-20", nameAs: "বিজয়া দশমী / মহা নৱমী / দশেহা", nameEn: "Dussehra / Vijayadashami", type: "gov-holiday" },
+            { dateStr: "2026-11-08", nameAs: "দীপাৱলী / কালী পূজা / লক্ষ্মী পূজা", nameEn: "Diwali / Kali Puja", type: "gov-holiday" },
+            { dateStr: "2026-11-24", nameAs: "লাчит দিৱস / গুৰু নানক জয়ন্তী", nameEn: "Lachit Divas / Guru Nanak Jayanti", type: "gov-holiday" },
+            { dateStr: "2026-12-02", nameAs: "অসম দিৱস (সুকাফা দিৱস)", nameEn: "Asom Divas", type: "gov-holiday" },
+            { dateStr: "2026-12-25", nameAs: "বৰদিন", nameEn: "Christmas Day", type: "gov-holiday" }
+        ];
+
+        const rashiData = [
+            { id: "aries", nameAs: "মেষ", nameEn: "Aries", icon: "♈", predAs: "ব্যৱসায়ত নতুন উন্নতি আৰু আয় বৃদ্ধিৰ যোগ আছে। প্ৰেমৰ ক্ষেত্ৰত শুভ সময়।", predEn: "Business prospects improve with new income sources. Perfect day for romantic life." },
+            { id: "taurus", nameAs: "বৃষ", nameEn: "Taurus", icon: "♉", predAs: "কৰ্মক্ষেত্ৰত কোনো সহকৰ্মীৰ সহায় লৈ জটিল কাম সমাধান কৰিব পাৰিব। খৰচ নিয়ন্ত্ৰণ কৰক।", predEn: "Collaborations at work bring resolutions. Limit expenditures to stay within budget." },
+            { id: "gemini", nameAs: "মিথুন", nameEn: "Gemini", icon: "♊", predAs: "পৰিয়ালৰ লগত সুন্দৰ সময় অতিবাহিত হ’ব। কোনো নতুন সিদ্ধান্ত ল’ব পাৰে।", predEn: "Quality moments spent with your family. Favorable time for making long-term decisions." },
+            { id: "cancer", nameAs: "কৰ্কট", nameEn: "Cancer", icon: "♋", predAs: "উদ্যোগী আৰু ছাত্ৰসকলৰ বাবে অত্যন্ত অনুকূল দিন। আজি নতুন খবৰ পাব পাৰে।", predEn: "Highly positive results for students and entrepreneurs. Expect some exciting news today." },
+            { id: "leo", nameAs: "সিংহ", nameEn: "Leo", icon: "♌", predAs: "সাহস আৰু ধৈৰ্য্যই আজি আপোনাক সকলো জটিলতাৰ পৰা উদ্ধাৰ কৰিব। স্বাস্থ্য ঠিকে থাকিব।", predEn: "Patience and high spirit will guide you through tricky situations. Health remains stable." },
+            { id: "virgo", nameAs: "কন্যা", nameEn: "Virgo", icon: "♍", predAs: "পঢ়া-শুনাত উন্নতি। আজি কোনো নতুন দায়িত্বভাৰ কান্ধত ল’বলগীয়া হ’ব পাৰে।", predEn: "Academic improvements expected. Prepare to take charge of new responsibilities." },
+            { id: "libra", nameAs: "তুলা", nameEn: "Libra", icon: "♎", predAs: "ব্যৱসায়িক অংশীদাৰিত্বৰ বাবে দিনটো শুভ। ঘৰত মাংগলিক কাৰ্যৰ আলোচনা হ’ব।", predEn: "An excellent day for forming partnerships. Discussions on holy ceremonies at home." },
+            { id: "scorpio", nameAs: "বৃশ্চিক", nameEn: "Scorpio", icon: "♏", predAs: "নতুন যাত্ৰা আৰম্ভ কৰাৰ সুন্দৰ সুযোগ। শাৰীৰিক আৰু মানসিক সুস্থতা অটুট থাকিব।", predEn: "Great timing to embark on a journey. Both physical and mental health looks stellar." },
+            { id: "sagittarius", nameAs: "ধনু", nameEn: "Sagittarius", icon: "♐", predAs: "আৰ্থিক দিশত শুভ প্ৰভাৱ দেখা যাব। কাৰোবাৰ সহায় পাই সুখী হ’ব।", predEn: "Financial aspects show upward trends. Receiving support from someone fills you with joy." },
+            { id: "capricorn", nameAs: "মকৰ", nameEn: "Capricorn", icon: "♑", predAs: "আপোনাৰ প্ৰতিভা আৰু দক্ষতাই নতুন স্বীকৃতি কঢ়িয়াই আনিব। শত্ৰু আঁতৰি যাব।", predEn: "Skills and creativity get positive attention today. Obstacles successfully removed." },
+            { id: "aquarius", nameAs: "কুম্ভ", nameEn: "Aquarius", icon: "♒", predAs: "কৰ্মক্ষেত্ৰত পদোন্নতিৰ আশা কৰিব পাৰি। মানসিক প্ৰশান্তি বজাই ৰাখিব।", predEn: "Career advancements or promotions are highly probable. Mental clarity remains perfect." },
+            { id: "pisces", nameAs: "মীন", nameEn: "Pisces", icon: "♓", predAs: "দীৰ্ঘদিনীয়া সমস্যা সমাধানৰ ইঙ্গিত। প্ৰিয়জনৰ সৈতে ফুৰিবলৈ যাব পাৰে।", predEn: "Long-standing problems find closure today. Plan a nice trip or outing with your beloved." }
+        ];
+
+        let selectedRashiId = "aries";
+
+        // Native Tabs switching function
+        function switchTab(tabId) {
+            // Hide all tab panels
+            document.querySelectorAll('.app-tab-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+
+            // Show selected panel
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Reset navigation menu styling
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('text-[#d21f3c]');
+                item.classList.add('text-slate-400');
+            });
+
+            // Set active highlight on nav item
+            document.getElementById(`nav-${tabId}`).classList.add('text-[#d21f3c]');
+            document.getElementById(`nav-${tabId}`).classList.remove('text-slate-400');
+
+            // Quick auto Scroll to top upon transition
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Generate daily proverb suggestion
+        function updateProverb() {
+            const index = Math.floor(Math.random() * proverbs.length);
+            const prov = proverbs[index];
+            document.getElementById('cultural-proverb').innerText = currentLanguage === 'as' ? prov.as : prov.en;
+        }
+
+        // Render Horoscope Selection
+        function renderHoroscopeGrid() {
+            const grid = document.getElementById('rashi-buttons-grid');
+            grid.innerHTML = '';
+            rashiData.forEach(r => {
+                const isSelected = r.id === selectedRashiId;
+                const activeClasses = isSelected ? 'bg-amber-100 border-[#d21f3c] text-[#d21f3c]' : 'bg-[#fdfcf9] border-slate-200 text-slate-700';
+                
+                grid.innerHTML += `
+                    <button onclick="selectRashi('${r.id}')" class="flex flex-col items-center justify-center p-2 rounded-xl border text-center transition duration-150 active:scale-95 hover:bg-amber-50/50 ${activeClasses}">
+                        <span class="text-xl">${r.icon}</span>
+                        <span class="text-[9px] font-bold mt-1 tracking-tight">${currentLanguage === 'as' ? r.nameAs : r.nameEn}</span>
+                    </button>
+                `;
+            });
+            updateHoroscopeCard();
+        }
+
+        function selectRashi(rashiId) {
+            selectedRashiId = rashiId;
+            renderHoroscopeGrid();
+        }
+
+        function updateHoroscopeCard() {
+            const rashi = rashiData.find(r => r.id === selectedRashiId);
+            if (!rashi) return;
+            document.getElementById('selected-rashi-icon').innerText = rashi.icon;
+            document.getElementById('selected-rashi-name').innerText = currentLanguage === 'as' 
+                ? `${rashi.nameAs} (${rashi.nameEn})` 
+                : `${rashi.nameEn} (${rashi.nameAs})`;
+            document.getElementById('horoscope-text-content').innerText = currentLanguage === 'as' ? rashi.predAs : rashi.predEn;
+        }
+
+        // Translate entire UI elements
+        function updateLocalizationUI() {
+            const strings = i18n[currentLanguage];
+
+            // Primary buttons & Header Labels
+            document.getElementById('btn-today').innerText = strings.todayBtn;
+            document.getElementById('lang-btn-text').innerText = currentLanguage === 'as' ? 'English' : 'অসমীয়া';
+            document.getElementById('detail-tag').innerText = strings.selectedDayLabel;
+            document.getElementById('events-header-label').innerText = strings.eventsHeader;
+            document.getElementById('rashifal-title').innerText = strings.horoscopeTitle;
+            document.getElementById('holiday-list-title').innerText = strings.festivalsBtn;
+            document.getElementById('saved-notes-title').innerText = strings.savedNotesTitle;
+            document.getElementById('add-note-action-text').innerText = strings.addNoteAction;
+
+            // Nav Label Translations
+            document.getElementById('nav-label-calendar').innerText = strings.navCalendar;
+            document.getElementById('nav-label-holidays').innerText = strings.navHolidays;
+            document.getElementById('nav-label-horoscope').innerText = strings.navHoroscope;
+            document.getElementById('nav-label-notes').innerText = strings.navNotes;
+
+            // Modal Translations
+            document.getElementById('modal-note-title').innerText = strings.modalNoteTitle;
+            document.getElementById('lbl-note-text').innerText = strings.lblNoteText;
+            document.getElementById('lbl-note-tag').innerText = strings.lblNoteTag;
+            document.getElementById('btn-cancel').innerText = strings.btnCancel;
+            document.getElementById('btn-save').innerText = strings.btnSave;
+            document.getElementById('note-text-input').placeholder = strings.notePlaceholder;
+
+            // Header Era update
+            const dummyDate = convertToAssameseDate(currentDate);
+            let eraText = strings.eraHeader.replace('{bYear}', toAssameseNumber(dummyDate.bhaskarabda)).replace('{sYear}', toAssameseNumber(dummyDate.sakabda));
+            document.getElementById('header-years').innerText = eraText;
+
+            // Weekday Row Generation
+            const weekdayHeaders = document.getElementById('weekday-headers');
+            weekdayHeaders.innerHTML = '';
+            strings.weekdays.forEach(day => {
+                weekdayHeaders.innerHTML += `<div class="py-1.5 font-bold uppercase tracking-wider">${day}</div>`;
+            });
+            updateProverb();
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'as' ? 'en' : 'as';
+            updateLocalizationUI();
+            renderCalendar();
+            updateDayDetailPanel();
+            renderAllHolidays();
+            renderHoroscopeGrid();
+            renderAllSavedNotes();
+        }
+
+        // Primary calendar build algorithm
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            // Set Month Title Strings
+            const monthsEng = i18n[currentLanguage].monthsEng;
+            document.getElementById('month-year-label').innerText = `${monthsEng[month]} ${toAssameseNumber(year)}`;
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+            const prevTotalDays = new Date(year, month, 0).getDate();
+
+            // Setup traditional Month subtitle ranges
+            const startAsInfo = convertToAssameseDate(new Date(year, month, 1));
+            const endAsInfo = convertToAssameseDate(new Date(year, month, totalDays));
+            let rangeLabel = "";
+            if (currentLanguage === 'as') {
+                rangeLabel = `${startAsInfo.monthAs} - ${endAsInfo.monthAs} (ভাস্কৰাব্দ ${toAssameseNumber(startAsInfo.bhaskarabda)})`;
+            } else {
+                rangeLabel = `${startAsInfo.monthEn} - ${endAsInfo.monthEn} (Bhaskarabda ${startAsInfo.bhaskarabda})`;
+            }
+            document.getElementById('as-month-label').innerText = rangeLabel;
+
+            // 1. Previous month padded cells
+            for (let i = firstDayIndex; i > 0; i--) {
+                const dayNum = prevTotalDays - i + 1;
+                const dummyDate = new Date(year, month - 1, dayNum);
+                const asInfo = convertToAssameseDate(dummyDate);
+                grid.appendChild(createDayCell(dayNum, false, false, asInfo, dummyDate));
+            }
+
+            // 2. Main active current month cells
+            for (let i = 1; i <= totalDays; i++) {
+                const cellDate = new Date(year, month, i);
+                const isToday = cellDate.toDateString() === todayDate.toDateString();
+                const isSelected = cellDate.toDateString() === selectedDate.toDateString();
+                const asInfo = convertToAssameseDate(cellDate);
+                grid.appendChild(createDayCell(i, true, isToday, asInfo, cellDate, isSelected));
+            }
+
+            // 3. Next month padded cells
+            const totalCellsRendered = firstDayIndex + totalDays;
+            const remainingPaddings = totalCellsRendered % 7 === 0 ? 0 : 7 - (totalCellsRendered % 7);
+            for (let i = 1; i <= remainingPaddings; i++) {
+                const dummyDate = new Date(year, month + 1, i);
+                const asInfo = convertToAssameseDate(dummyDate);
+                grid.appendChild(createDayCell(i, false, false, asInfo, dummyDate));
+            }
+        }
+
+        function createDayCell(dayNum, isCurrentMonth, isToday, asInfo, cellDate, isSelected = false) {
+            const container = document.createElement('div');
+            container.className = `min-h-[55px] md:min-h-[65px] bg-white p-1 flex flex-col justify-between border-b border-r border-slate-100 relative cursor-pointer select-none transition-all duration-100 ${!isCurrentMonth ? 'opacity-35 bg-slate-50' : ''}`;
+            
+            const holidays = getHolidaysForDate(cellDate);
+            const hasHoliday = holidays.length > 0;
+            const hasNotes = userNotes[formatDateToKey(cellDate)]?.length > 0;
+
+            if (isCurrentMonth) {
+                if (isSelected) {
+                    container.classList.add('bg-amber-50', 'ring-2', 'ring-[#d21f3c]', 'z-10');
+                } else if (isToday) {
+                    container.classList.add('bg-red-50/50');
+                }
+            }
+
+            const isSunday = cellDate.getDay() === 0;
+            const labelColorClass = (isSunday || hasHoliday) ? 'text-[#d21f3c] font-extrabold' : 'text-slate-700';
+
+            // Dates and Sub-dates Display
+            const topRow = document.createElement('div');
+            topRow.className = "flex justify-between items-start";
+            
+            const gregLabel = document.createElement('span');
+            gregLabel.className = `text-xs md:text-sm font-bold ${labelColorClass} ${isToday ? 'bg-[#d21f3c] text-white w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center shadow-xs' : ''}`;
+            gregLabel.innerText = toAssameseNumber(dayNum);
+            
+            const asLabel = document.createElement('span');
+            asLabel.className = "text-[8px] md:text-[9px] text-amber-800 font-extrabold";
+            asLabel.innerText = toAssameseNumber(asInfo.day);
+
+            topRow.appendChild(gregLabel);
+            topRow.appendChild(asLabel);
+            container.appendChild(topRow);
+
+            // Bottom Indicators
+            const indicators = document.createElement('div');
+            indicators.className = "flex gap-1 justify-center items-center min-h-[8px] mt-1";
+
+            if (hasHoliday) {
+                const dot = document.createElement('span');
+                dot.className = "w-1.5 h-1.5 rounded-full bg-red-600 block";
+                indicators.appendChild(dot);
+            }
+
+            if (hasNotes) {
+                const dot = document.createElement('span');
+                dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500 block";
+                indicators.appendChild(dot);
+            }
+
+            container.appendChild(indicators);
+
+            // Dynamic interaction handlers
+            if (isCurrentMonth) {
+                container.addEventListener('click', () => {
+                    selectedDate = cellDate;
+                    renderCalendar();
+                    updateDayDetailPanel();
+                });
+            } else {
+                container.addEventListener('click', () => {
+                    currentDate = cellDate;
+                    selectedDate = cellDate;
+                    renderCalendar();
+                    updateDayDetailPanel();
+                });
+            }
+
+            return container;
+        }
+
+        // Update Day Detail Drawer Panel
+        function updateDayDetailPanel() {
+            const key = formatDateToKey(selectedDate);
+            const asInfo = convertToAssameseDate(selectedDate);
+            const strings = i18n[currentLanguage];
+
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const gregString = selectedDate.toLocaleDateString(currentLanguage === 'as' ? 'as-IN' : 'en-US', options);
+            document.getElementById('detail-gregorian-date').innerText = gregString;
+
+            const bYearAsStr = toAssameseNumber(asInfo.bhaskarabda);
+            const sYearAsStr = toAssameseNumber(asInfo.sakabda);
+            const dayAsStr = toAssameseNumber(asInfo.day);
+
+            if (currentLanguage === 'as') {
+                document.getElementById('detail-title-as').innerText = `${dayAsStr} ${asInfo.monthAs}, ভাস্কৰাব্দ ${bYearAsStr}`;
+                document.getElementById('detail-sub-info').innerHTML = `<span><i class="fa-solid fa-moon"></i> শকাব্দ ${sYearAsStr}</span><span>•</span><span>${getAssameseWeekdayName(selectedDate.getDay())}</span>`;
+            } else {
+                document.getElementById('detail-title-as').innerText = `${dayAsStr} ${asInfo.monthEn}, Bhaskarabda ${bYearAsStr}`;
+                document.getElementById('detail-sub-info').innerHTML = `<span><i class="fa-solid fa-moon"></i> Sakabda ${sYearAsStr}</span><span>•</span><span>${selectedDate.toLocaleDateString('en-US', { weekday: 'long' })}</span>`;
+            }
+
+            const eventsListContainer = document.getElementById('day-events-list');
+            eventsListContainer.innerHTML = '';
+
+            const holidays = getHolidaysForDate(selectedDate);
+            const notes = userNotes[key] || [];
+
+            if (holidays.length === 0 && notes.length === 0) {
+                eventsListContainer.innerHTML = `
+                    <div class="text-xs text-slate-400 italic py-2">
+                        ${strings.noEvents}
+                    </div>
+                `;
+                return;
+            }
+
+            // Holidays listing
+            holidays.forEach(h => {
+                const title = currentLanguage === 'as' ? h.nameAs : h.nameEn;
+                const typeLabel = h.type === 'gov-holiday' ? (currentLanguage === 'as' ? 'চৰকাৰী বন্ধ' : 'Govt. Holiday') : (currentLanguage === 'as' ? 'উৎসৱ' : 'Festival/Restricted');
+                const badgeColor = h.type === 'gov-holiday' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-amber-50 text-amber-700 border border-amber-200';
+                
+                eventsListContainer.innerHTML += `
+                    <div class="flex items-center justify-between p-3 rounded-xl ${badgeColor}">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="font-bold text-xs">${title}</span>
+                        </div>
+                        <span class="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/60 font-semibold">${typeLabel}</span>
+                    </div>
+                `;
+            });
+
+            // Notes listing
+            notes.forEach((note, index) => {
+                const colorMap = {
+                    emerald: "border-emerald-500 bg-emerald-50/50 text-emerald-800",
+                    amber: "border-amber-500 bg-amber-50/50 text-amber-800",
+                    red: "border-red-500 bg-red-50/50 text-red-800",
+                    blue: "border-blue-500 bg-blue-50/50 text-blue-800"
+                };
+                const colorClass = colorMap[note.color] || colorMap.emerald;
+
+                eventsListContainer.innerHTML += `
+                    <div class="flex items-start justify-between p-3 rounded-xl border-l-4 shadow-xs ${colorClass}">
+                        <div class="flex-grow pr-4">
+                            <p class="text-xs whitespace-pre-line leading-relaxed">${note.text}</p>
+                        </div>
+                        <button onclick="deleteNote('${key}', ${index})" class="text-slate-400 hover:text-red-600 transition p-1" title="Delete Note">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function getAssameseWeekdayName(dayIndex) {
+            const days = ["দেওবাৰ", "সোমবাৰ", "মঙলবাৰ", "বুধবাৰ", "বৃহস্পতিবাৰ", "শুক্ৰবাৰ", "শনিবাৰ"];
+            return days[dayIndex];
+        }
+
+        function navigateMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            renderCalendar();
+            updateLocalizationUI();
+        }
+
+        function jumpToToday() {
+            currentDate = new Date();
+            selectedDate = new Date();
+            renderCalendar();
+            updateLocalizationUI();
+            updateDayDetailPanel();
+        }
+
+        // Native sliding Bottom-sheet interactions
+        function openNoteModal() {
+            const modal = document.getElementById('note-modal');
+            const sheet = document.getElementById('note-sheet');
+            const dateLabel = document.getElementById('modal-note-date-label');
+            
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const gregString = selectedDate.toLocaleDateString(currentLanguage === 'as' ? 'as-IN' : 'en-US', options);
+            
+            dateLabel.innerText = `${currentLanguage === 'as' ? 'তাৰিখ' : 'Date'}: ${gregString}`;
+            document.getElementById('note-text-input').value = '';
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                sheet.classList.remove('hidden-sheet');
+            }, 10);
+        }
+
+        function closeNoteModal() {
+            const modal = document.getElementById('note-modal');
+            const sheet = document.getElementById('note-sheet');
+            
+            sheet.classList.add('hidden-sheet');
+            modal.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function saveNote() {
+            const inputVal = document.getElementById('note-text-input').value.trim();
+            if (!inputVal) return;
+
+            const selectedColor = document.querySelector('input[name="note-color"]:checked').value;
+            const key = formatDateToKey(selectedDate);
+
+            if (!userNotes[key]) {
+                userNotes[key] = [];
+            }
+
+            userNotes[key].push({
+                text: inputVal,
+                color: selectedColor,
+                createdAt: new Date().toISOString()
+            });
+
+            localStorage.setItem('axom_calendar_notes', JSON.stringify(userNotes));
+            closeNoteModal();
+            renderCalendar();
+            updateDayDetailPanel();
+            renderAllSavedNotes();
+        }
+
+        function deleteNote(dateKey, index) {
+            if (!userNotes[dateKey]) return;
+            userNotes[dateKey].splice(index, 1);
+            if (userNotes[dateKey].length === 0) {
+                delete userNotes[dateKey];
+            }
+            localStorage.setItem('axom_calendar_notes', JSON.stringify(userNotes));
+            renderCalendar();
+            updateDayDetailPanel();
+            renderAllSavedNotes();
+        }
+
+        // Render searchable Holiday list
+        function renderAllHolidays() {
+            filterHolidays();
+        }
+
+        function filterHolidays() {
+            const query = document.getElementById('holiday-search').value.toLowerCase().trim();
+            const container = document.getElementById('festivals-container');
+            container.innerHTML = '';
+            
+            const activeYear = currentDate.getFullYear();
+            const yearHolidays = holidayDatabase.filter(h => h.dateStr.startsWith(activeYear.toString()));
+
+            const filtered = yearHolidays.filter(h => {
+                const name = (currentLanguage === 'as' ? h.nameAs : h.nameEn).toLowerCase();
+                return name.includes(query);
+            });
+
+            document.getElementById('holiday-count-badge').innerText = toAssameseNumber(filtered.length) + (currentLanguage === 'as' ? " টা বন্ধ" : " Holidays");
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-xs text-slate-400 italic py-4 text-center">কোনো বন্ধ বিচাৰি পোৱা নগ’ল। (No matches)</div>`;
+                return;
+            }
+
+            filtered.sort((a,b) => new Date(a.dateStr) - new Date(b.dateStr));
+
+            filtered.forEach(h => {
+                const dateObj = new Date(h.dateStr);
+                const isGov = h.type === 'gov-holiday';
+                const tag = isGov ? (currentLanguage === 'as' ? 'চৰকাৰী' : 'Gov') : (currentLanguage === 'as' ? 'উৎসৱ' : 'Festival');
+                const badgeStyle = isGov ? 'bg-red-100 text-[#d21f3c]' : 'bg-amber-100 text-amber-800';
+
+                const options = { day: 'numeric', month: 'short' };
+                const dateStrLabel = dateObj.toLocaleDateString(currentLanguage === 'as' ? 'as-IN' : 'en-US', options);
+
+                container.innerHTML += `
+                    <div onclick="jumpToSpecificDate('${h.dateStr}')" class="flex items-center justify-between p-3 rounded-xl border border-slate-100 hover:border-amber-200 hover:bg-amber-50/40 transition cursor-pointer active:scale-98">
+                        <div class="flex items-center gap-2 pr-2">
+                            <span class="font-bold text-xs text-slate-800">${currentLanguage === 'as' ? h.nameAs : h.nameEn}</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 flex-shrink-0">
+                            <span class="text-[9px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-500 ${badgeStyle}">${tag}</span>
+                            <span class="text-[11px] font-bold text-slate-500 whitespace-nowrap">${toAssameseNumber(dateStrLabel)}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function jumpToSpecificDate(dateString) {
+            const targetDate = new Date(dateString);
+            currentDate = new Date(targetDate);
+            selectedDate = new Date(targetDate);
+            
+            // Render main calendar updates
+            renderCalendar();
+            updateDayDetailPanel();
+            updateLocalizationUI();
+            
+            // Switch back immediately to calendar screen
+            switchTab('calendar');
+        }
+
+        // Render saved Notes
+        function renderAllSavedNotes() {
+            const container = document.getElementById('all-notes-list');
+            container.innerHTML = '';
+
+            const keys = Object.keys(userNotes).sort();
+
+            if (keys.length === 0) {
+                container.innerHTML = `
+                    <div class="text-xs text-slate-400 italic py-6 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                        ${currentLanguage === 'as' ? 'কোনো সংৰক্ষিত টোকা পোৱা নগ’ল।' : 'No saved notes found.'}
+                    </div>
+                `;
+                return;
+            }
+
+            keys.forEach(key => {
+                const notes = userNotes[key];
+                const dateObj = new Date(key);
+                const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                const formattedDate = dateObj.toLocaleDateString(currentLanguage === 'as' ? 'as-IN' : 'en-US', options);
+
+                notes.forEach((note, index) => {
+                    const colorMap = {
+                        emerald: "bg-emerald-500",
+                        amber: "bg-amber-500",
+                        red: "bg-red-500",
+                        blue: "bg-blue-500"
+                    };
+                    const colorDot = colorMap[note.color] || colorMap.emerald;
+
+                    container.innerHTML += `
+                        <div class="p-3 bg-white rounded-xl border border-slate-100 flex items-start gap-2.5 hover:bg-slate-50 transition shadow-xs">
+                            <span class="w-2.5 h-2.5 rounded-full ${colorDot} mt-1.5 flex-shrink-0"></span>
+                            <div class="flex-grow">
+                                <div class="flex justify-between items-center mb-1">
+                                    <button onclick="jumpToSpecificDate('${key}')" class="text-[10px] font-bold text-[#d21f3c] hover:underline">
+                                        ${toAssameseNumber(formattedDate)}
+                                    </button>
+                                    <button onclick="deleteNote('${key}', ${index})" class="text-slate-400 hover:text-red-500 transition p-1">
+                                        <i class="fa-solid fa-trash-can text-[10px]"></i>
+                                    </button>
+                                </div>
+                                <p class="text-xs text-slate-700 font-medium whitespace-pre-wrap leading-relaxed">${note.text}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        // Swipe gestures setup
+        let touchstartX = 0;
+        let touchendX = 0;
+
+        function checkDirection() {
+            const swipeThreshold = 60;
+            if (touchendX < touchstartX - swipeThreshold) {
+                // Swipe Left -> Next Month
+                navigateMonth(1);
+            }
+            if (touchendX > touchstartX + swipeThreshold) {
+                // Swipe Right -> Previous Month
+                navigateMonth(-1);
+            }
+        }
+
+        const gestureZone = document.getElementById('calendar-swipe-zone');
+        gestureZone.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        gestureZone.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            checkDirection();
+        }, { passive: true });
+
+        // Initialize state
+        window.onload = function() {
+            updateLocalizationUI();
+            renderCalendar();
+            updateDayDetailPanel();
+            renderHoroscopeGrid();
+            renderAllHolidays();
+            renderAllSavedNotes();
+        };
+    </script>
+</body>
+</html>
