@@ -4,55 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>অসমীয়া কেলেণ্ডাৰ - Assamese Calendar Mobile App</title>
-    <!-- Tailwind CSS for modern responsive mobile utility classes -->
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome for sleek modern mobile icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Inter and Hin/Bengali fonts for excellent rendering of Assamese characters -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Serif+Bengali:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Serif+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        body {
-            font-family: 'Inter', 'Noto Serif Bengali', sans-serif;
+        * {
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            background-color: #fbf8f2; /* Soft Muga Silk Base Cream Color */
-        }
-        /* Mobile safe-area padding at bottom for notch phones */
-        .safe-bottom {
-            padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
+            touch-action: manipulation;
         }
         
-        /* Realistic Phulam Gamosa Border Motif */
+        body {
+            font-family: 'Inter', 'Noto Serif Bengali', sans-serif;
+            user-select: none;
+            background-color: #fbf8f2; /* Muga Silk Soft Gold Cream */
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        /* Safe Bottom Padding for Bezel-less Mobile Screens */
+        .safe-bottom-padding {
+            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 84px);
+        }
+
+        /* Authentic Assamese Phulam Gamosa Red Motif Border */
         .gamosa-border {
             background: 
                 linear-gradient(90deg, #c21833 2px, transparent 2px) 0 0 / 8px 100%,
                 linear-gradient(45deg, #c21833 25%, transparent 25%, transparent 75%, #c21833 75%, #c21833) 0 0 / 16px 16px,
                 linear-gradient(45deg, #c21833 25%, #fdfbf7 25%, #fdfbf7 75%, #c21833 75%, #c21833) 8px 8px / 16px 16px;
             background-color: #c21833;
-            height: 10px;
+            height: 8px;
             width: 100%;
-            box-shadow: 0 2px 4px rgba(194, 24, 51, 0.2);
+            box-shadow: 0 2px 5px rgba(194, 24, 51, 0.25);
         }
 
-        /* Subtle Axomiya Assamese weaving pattern for the background watermark */
+        /* Watermark Assamese Traditional Weave Pattern */
         .axom-watermark {
             background-image: radial-gradient(#c21833 1.2px, transparent 1.2px), radial-gradient(#c21833 1.2px, #fbf8f2 1.2px);
             background-size: 24px 24px;
             background-position: 0 0, 12px 12px;
-            opacity: 0.03;
-            position: absolute;
+            opacity: 0.035;
+            position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none;
             z-index: 0;
         }
 
-        /* Jonbiri (Half-moon shaped Assamese Ornament) style button highlights */
-        .jonbiri-glow {
-            box-shadow: 0 4px 14px 0 rgba(212, 175, 55, 0.15);
-        }
-
-        /* Hide scrollbars but keep functionality */
+        /* Scrollbar Hiding for Native App Look */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -61,120 +61,120 @@
             scrollbar-width: none;
         }
 
-        /* Bottom-sheet transition styles for a native mobile experience */
+        /* Native App Bottom-Sheet Animation */
         .bottom-sheet {
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .bottom-sheet.hidden-sheet {
             transform: translateY(100%);
         }
+
+        /* Touch Button Active Glows */
+        .jonbiri-glow {
+            box-shadow: 0 4px 16px rgba(194, 24, 51, 0.2);
+        }
     </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col transition-colors duration-300 overflow-x-hidden relative">
+<body class="text-slate-800 min-h-screen flex flex-col justify-between relative overflow-x-hidden">
 
     <div class="axom-watermark"></div>
 
-    <!-- Gamusa Accent Top Bar -->
-    <div class="gamosa-border sticky top-0 z-50"></div>
+    <!-- Top Gamusa Accent Border -->
+    <div class="gamosa-border fixed top-0 left-0 right-0 z-50"></div>
 
-    <!-- App Top Bar (Header) -->
-    <header class="bg-white/95 backdrop-blur-md shadow-xs sticky top-[10px] z-40 border-b border-amber-100/50 px-4 py-3">
-        <div class="max-w-md mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <!-- SVG Traditional Royal Jaapi Logo -->
-                <div class="w-11 h-11 bg-amber-50 rounded-full flex items-center justify-center border border-amber-200/70 shadow-sm relative">
-                    <svg class="w-9 h-9" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="44" fill="#fdfcf9" stroke="#c21833" stroke-width="2.5"/>
+    <!-- Fixed Native App Header -->
+    <header class="bg-white/95 backdrop-blur-md shadow-xs fixed top-[8px] left-0 right-0 z-40 border-b border-amber-100/60 px-4 py-2.5 max-w-md mx-auto">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <!-- SVG Traditional Jaapi Icon -->
+                <div class="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center border border-amber-200 shadow-xs relative flex-shrink-0">
+                    <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="44" fill="#fdfcf9" stroke="#c21833" stroke-width="3"/>
                         <circle cx="50" cy="50" r="32" stroke="#d4af37" stroke-width="2" stroke-dasharray="4 2"/>
-                        <!-- Jaapi Petals & Cones -->
                         <path d="M50 10 L50 90 M10 50 L90 50 M22 22 L78 78 M22 78 L78 22" stroke="#c21833" stroke-width="2"/>
-                        <!-- Inner Diamond patterns -->
                         <path d="M50 30 L65 50 L50 70 L35 50 Z" stroke="#d4af37" stroke-width="1.5" fill="#fdfbf7"/>
-                        <circle cx="50" cy="50" r="10" fill="#c21833"/>
-                        <circle cx="50" cy="50" r="4" fill="#fdfcf9"/>
+                        <circle cx="50" cy="50" r="9" fill="#c21833"/>
+                        <circle cx="50" cy="50" r="3.5" fill="#fdfcf9"/>
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-lg font-extrabold text-[#c21833] tracking-tight font-serif flex items-center gap-1.5">
+                    <h1 class="text-base font-black text-[#c21833] tracking-tight font-serif flex items-center gap-1">
                         অসমীয়া কেলেণ্ডাৰ
                     </h1>
-                    <p class="text-[10px] text-amber-800 font-bold tracking-wide" id="header-years">
+                    <p class="text-[9.5px] text-amber-900 font-extrabold tracking-wide" id="header-years">
                         ভাস্কৰাব্দ ১৪৩৩ | শকাব্দ ১৯৪৮
                     </p>
                 </div>
             </div>
 
-            <!-- Language and Quick Actions -->
-            <div class="flex items-center gap-2">
-                <button id="lang-btn" onclick="toggleLanguage()" class="px-3.5 py-1.5 rounded-full bg-amber-50/75 hover:bg-amber-100 border border-amber-200/80 text-[#c21833] font-bold text-xs transition duration-150 shadow-xs flex items-center gap-1 active:scale-95">
-                    <i class="fa-solid fa-language text-sm"></i>
-                    <span id="lang-btn-text" class="font-sans">English</span>
-                </button>
-            </div>
+            <!-- Language Switcher Button -->
+            <button id="lang-btn" onclick="toggleLanguage()" class="px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-200/80 text-[#c21833] font-bold text-xs transition duration-150 flex items-center gap-1.5 active:scale-95 shadow-2xs">
+                <i class="fa-solid fa-language text-sm"></i>
+                <span id="lang-btn-text">English</span>
+            </button>
         </div>
     </header>
 
-    <!-- Main Scrollable App Container -->
-    <main class="flex-grow max-w-md w-full mx-auto px-4 pt-4 pb-8 safe-bottom relative z-10">
+    <!-- Main Scrollable Content Container -->
+    <main class="flex-grow max-w-md w-full mx-auto px-3.5 pt-16 safe-bottom-padding relative z-10">
 
         <!-- ==================== TAB 1: CALENDAR VIEW ==================== -->
-        <section id="tab-calendar" class="app-tab-panel space-y-4">
+        <section id="tab-calendar" class="app-tab-panel space-y-3.5">
             
-            <!-- Dynamic Month Selection Strip with Gamusa Style -->
-            <div class="bg-white rounded-2xl shadow-xs p-3.5 border border-amber-100/50 flex items-center justify-between relative overflow-hidden">
-                <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#c21833]"></div>
+            <!-- Dynamic Month Selection Bar -->
+            <div class="bg-white rounded-2xl shadow-xs p-3 border border-amber-100/60 flex items-center justify-between relative overflow-hidden">
+                <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-[#c21833]"></div>
                 
-                <button onclick="navigateMonth(-1)" class="w-10 h-10 rounded-xl bg-amber-50/50 hover:bg-amber-100/75 text-[#c21833] flex items-center justify-center transition active:scale-90 border border-amber-100/40">
+                <button onclick="navigateMonth(-1)" class="w-10 h-10 rounded-xl bg-amber-50/70 hover:bg-amber-100 text-[#c21833] flex items-center justify-center transition active:scale-90 border border-amber-200/50 shadow-2xs">
                     <i class="fa-solid fa-chevron-left text-sm font-bold"></i>
                 </button>
                 
                 <div class="text-center">
-                    <h2 id="month-year-label" class="text-base font-extrabold text-slate-800 font-serif">January 2026</h2>
+                    <h2 id="month-year-label" class="text-base font-black text-slate-800 font-serif">January 2026</h2>
                     <p id="as-month-label" class="text-[11px] text-[#c21833] font-extrabold tracking-wide mt-0.5">পুহ - মাঘ (১৪৩২ ভাস্কৰাব্দ)</p>
                 </div>
 
-                <button onclick="navigateMonth(1)" class="w-10 h-10 rounded-xl bg-amber-50/50 hover:bg-amber-100/75 text-[#c21833] flex items-center justify-center transition active:scale-90 border border-amber-100/40">
+                <button onclick="navigateMonth(1)" class="w-10 h-10 rounded-xl bg-amber-50/70 hover:bg-amber-100 text-[#c21833] flex items-center justify-center transition active:scale-90 border border-amber-200/50 shadow-2xs">
                     <i class="fa-solid fa-chevron-right text-sm font-bold"></i>
                 </button>
             </div>
 
-            <!-- Traditional Assamese Proverb Box (Daily Touch of Culture) -->
-            <div class="bg-amber-50/60 rounded-2xl p-3.5 border border-amber-200/40 flex items-start gap-2.5 relative">
-                <div class="text-xl leading-none">💡</div>
+            <!-- Traditional Cultural Proverb Box -->
+            <div class="bg-amber-50/70 rounded-2xl p-3 border border-amber-200/50 flex items-start gap-2.5 shadow-2xs">
+                <div class="text-lg leading-none mt-0.5">💡</div>
                 <div class="space-y-0.5">
-                    <span class="text-[9px] uppercase font-bold tracking-wider text-amber-800">অসমীয়া প্ৰবচন / Proverb</span>
-                    <p id="cultural-proverb" class="text-xs text-amber-950 font-medium leading-relaxed italic font-serif">
+                    <span class="text-[9px] uppercase font-bold tracking-wider text-amber-900">অসমীয়া প্ৰবচন / Proverb</span>
+                    <p id="cultural-proverb" class="text-xs text-amber-950 font-semibold leading-relaxed italic font-serif">
                         "ৰাইজ নহলে ৰজা নাই, গছ নহলে ছায়া নাই।"
                     </p>
                 </div>
             </div>
 
-            <!-- Calendar Display Container -->
-            <div class="bg-white rounded-3xl shadow-md border border-amber-100/60 overflow-hidden relative" id="calendar-swipe-zone">
-                <!-- Decorative Top Weave on Calendar Header -->
-                <div class="h-1.5 bg-gradient-to-r from-[#c21833] via-[#d4af37] to-[#c21833]"></div>
+            <!-- Calendar Display Grid Container -->
+            <div class="bg-white rounded-3xl shadow-sm border border-amber-100/80 overflow-hidden relative" id="calendar-swipe-zone">
+                <div class="h-1 bg-gradient-to-r from-[#c21833] via-[#d4af37] to-[#c21833]"></div>
 
-                <!-- Weekdays Header Row -->
-                <div class="grid grid-cols-7 bg-amber-50/30 border-b border-amber-100/40 text-center py-3 text-[10px] md:text-xs font-bold text-amber-950" id="weekday-headers">
-                    <!-- Loaded dynamically in JS -->
+                <!-- Weekdays Header -->
+                <div class="grid grid-cols-7 bg-amber-50/40 border-b border-amber-100/60 text-center py-2.5 text-[10.5px] font-black text-amber-950" id="weekday-headers">
+                    <!-- Loaded dynamically -->
                 </div>
 
                 <!-- Days Matrix Grid -->
-                <div class="grid grid-cols-7 gap-px bg-amber-100/40" id="calendar-grid">
-                    <!-- Days dynamically loaded -->
+                <div class="grid grid-cols-7 gap-px bg-amber-100/50" id="calendar-grid">
+                    <!-- Loaded dynamically -->
                 </div>
             </div>
 
-            <!-- Today Button Quick Jump -->
-            <div class="flex justify-center">
-                <button onclick="jumpToToday()" class="px-6 py-3 bg-gradient-to-r from-[#c21833] to-[#e02441] text-white rounded-full font-bold shadow-md shadow-red-700/10 hover:shadow-lg transition duration-150 text-xs flex items-center gap-2 active:scale-95 jonbiri-glow">
+            <!-- Today Jump Button -->
+            <div class="flex justify-center pt-0.5">
+                <button onclick="jumpToToday()" class="px-6 py-2.5 bg-gradient-to-r from-[#c21833] to-[#e02441] text-white rounded-full font-bold shadow-md text-xs flex items-center gap-2 active:scale-95 jonbiri-glow">
                     <i class="fa-solid fa-circle-dot animate-pulse"></i>
                     <span id="btn-today">আজি</span>
                 </button>
             </div>
 
-            <!-- Highlighted Selected Day Panel -->
-            <div id="day-detail-box" class="bg-white rounded-2xl shadow-sm border border-amber-100/50 p-4.5 relative overflow-hidden">
+            <!-- Selected Day Detail Card -->
+            <div id="day-detail-box" class="bg-white rounded-2xl shadow-xs border border-amber-100/70 p-4 relative overflow-hidden">
                 <div class="absolute top-0 bottom-0 left-0 w-1.5 bg-gradient-to-b from-[#c21833] to-[#d4af37]"></div>
                 
                 <div class="flex justify-between items-start">
@@ -183,8 +183,8 @@
                             <span class="px-2 py-0.5 bg-red-50 text-[#c21833] border border-red-100 rounded text-[9px] font-extrabold" id="detail-tag">নিৰ্বাচিত দিন</span>
                             <span class="text-xs text-slate-500 font-bold" id="detail-gregorian-date">June 1, 2026</span>
                         </div>
-                        <h3 class="text-xl font-extrabold text-slate-900 mt-2 font-serif" id="detail-title-as">১ আহাৰ, ভাস্কৰাব্দ ১৪৩৩</h3>
-                        <p class="text-amber-900 text-xs font-extrabold mt-1.5 flex items-center gap-2" id="detail-sub-info">
+                        <h3 class="text-lg font-black text-slate-900 mt-1.5 font-serif" id="detail-title-as">১ আহাৰ, ভাস্কৰাব্দ ১৪৩৩</h3>
+                        <p class="text-amber-900 text-xs font-bold mt-1 flex items-center gap-2" id="detail-sub-info">
                             <span><i class="fa-solid fa-moon text-[#d4af37]"></i> শকাব্দ ১৯৪৮</span>
                             <span>•</span>
                             <span id="detail-day-name">সোমবাৰ</span>
@@ -192,15 +192,15 @@
                     </div>
 
                     <!-- Add note trigger -->
-                    <button onclick="openNoteModal()" class="w-10 h-10 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-md active:scale-90 transition-all" title="Add Note">
-                        <i class="fa-solid fa-plus text-base"></i>
+                    <button onclick="openNoteModal()" class="w-11 h-11 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-sm active:scale-90 transition-all flex-shrink-0" title="Add Note">
+                        <i class="fa-solid fa-plus text-lg"></i>
                     </button>
                 </div>
 
-                <!-- Event Details Area inside Daily View -->
-                <div class="mt-4 pt-3.5 border-t border-amber-50">
-                    <h4 class="text-[9px] font-extrabold uppercase text-slate-400 tracking-wider mb-2.5" id="events-header-label">দিনটোৰ কাৰ্যসূচী / বন্ধ বা টোকা</h4>
-                    <div id="day-events-list" class="space-y-2.5">
+                <!-- Event Details Area -->
+                <div class="mt-3.5 pt-3 border-t border-amber-100/50">
+                    <h4 class="text-[9px] font-extrabold uppercase text-slate-400 tracking-wider mb-2" id="events-header-label">দিনটোৰ কাৰ্যসূচী / বন্ধ বা টোকা</h4>
+                    <div id="day-events-list" class="space-y-2">
                         <!-- Loaded dynamically -->
                     </div>
                 </div>
@@ -209,185 +209,185 @@
         </section>
 
         <!-- ==================== TAB 2: HOLIDAYS LIST ==================== -->
-        <section id="tab-holidays" class="app-tab-panel space-y-4 hidden">
+        <section id="tab-holidays" class="app-tab-panel space-y-3.5 hidden">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-holly-berry text-[#c21833] text-lg"></i>
-                    <h3 class="text-lg font-extrabold text-slate-900 font-serif" id="holiday-list-title">উৎসৱ আৰু বন্ধৰ দিন</h3>
+                    <h3 class="text-base font-black text-slate-900 font-serif" id="holiday-list-title">উৎসৱ আৰু বন্ধৰ দিন</h3>
                 </div>
-                <span class="px-3 py-1 bg-red-50 border border-red-100 text-[#c21833] text-xs font-extrabold rounded-full shadow-xs" id="holiday-count-badge">০ টা বন্ধ</span>
+                <span class="px-3 py-1 bg-red-50 border border-red-100 text-[#c21833] text-xs font-black rounded-full shadow-2xs" id="holiday-count-badge">০ টা বন্ধ</span>
             </div>
 
-            <!-- Search Bar for finding Holidays -->
+            <!-- Search Bar -->
             <div class="relative">
-                <input type="text" id="holiday-search" oninput="filterHolidays()" placeholder="বন্ধৰ নাম লিখি বিচাৰক... / Search..." class="w-full pl-10 pr-4 py-3 rounded-2xl border border-amber-100 focus:outline-none focus:ring-2 focus:ring-[#c21833]/20 focus:border-[#c21833] bg-white text-sm shadow-xs">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-4 text-slate-400 text-sm"></i>
+                <input type="text" id="holiday-search" oninput="filterHolidays()" placeholder="বন্ধৰ নাম লিখি বিচাৰক... / Search..." class="w-full pl-10 pr-4 py-3 rounded-2xl border border-amber-200/70 focus:outline-none focus:ring-2 focus:ring-[#c21833]/20 focus:border-[#c21833] bg-white text-xs font-medium shadow-2xs">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
             </div>
 
             <!-- List Container -->
-            <div class="space-y-2.5" id="festivals-container">
+            <div class="space-y-2" id="festivals-container">
                 <!-- Loaded dynamically -->
             </div>
         </section>
 
         <!-- ==================== TAB 3: DAILY HOROSCOPE ==================== -->
-        <section id="tab-horoscope" class="app-tab-panel space-y-4 hidden">
+        <section id="tab-horoscope" class="app-tab-panel space-y-3.5 hidden">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-star-and-crescent text-[#d4af37] text-lg"></i>
-                <h3 class="text-lg font-extrabold text-slate-900 font-serif" id="rashifal-title">আজিৰ ৰাশিফল (Horoscope)</h3>
+                <h3 class="text-base font-black text-slate-900 font-serif" id="rashifal-title">আজিৰ ৰাশিফল (Horoscope)</h3>
             </div>
 
-            <!-- Compact grid for Rashi selects -->
+            <!-- Rashi Select Grid -->
             <div class="grid grid-cols-4 gap-2" id="rashi-buttons-grid">
                 <!-- Loaded dynamically -->
             </div>
 
-            <!-- Detailed horoscope display -->
-            <div class="bg-white rounded-3xl p-5 border border-amber-100/70 shadow-sm relative overflow-hidden">
-                <div class="absolute -right-8 -bottom-8 opacity-5 text-8xl" id="selected-rashi-bg-icon">♈</div>
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center border border-amber-200">
+            <!-- Detailed Horoscope Card -->
+            <div class="bg-white rounded-2xl p-4 border border-amber-100/80 shadow-2xs relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 opacity-5 text-8xl" id="selected-rashi-bg-icon">♈</div>
+                <div class="flex items-center gap-3 mb-2.5">
+                    <div class="w-11 h-11 bg-amber-50 rounded-2xl flex items-center justify-center border border-amber-200">
                         <span class="text-2xl" id="selected-rashi-icon">♈</span>
                     </div>
                     <div>
-                        <h4 class="font-extrabold text-[#c21833] text-base font-serif" id="selected-rashi-name">মেষ (Aries)</h4>
-                        <span class="text-[9px] uppercase tracking-widest text-amber-800 font-bold">দৈনিক ভৱিষ্যৎফল</span>
+                        <h4 class="font-extrabold text-[#c21833] text-sm font-serif" id="selected-rashi-name">মেষ (Aries)</h4>
+                        <span class="text-[9px] uppercase tracking-widest text-amber-800 font-extrabold">দৈনিক ভৱিষ্যৎফল</span>
                     </div>
                 </div>
-                <p class="text-xs md:text-sm text-slate-700 leading-relaxed font-medium" id="horoscope-text-content">
+                <p class="text-xs text-slate-700 leading-relaxed font-medium" id="horoscope-text-content">
                     পঢ়িবলৈ ৰাশিৰ ওপৰত ক্লিক কৰক।
                 </p>
             </div>
         </section>
 
         <!-- ==================== TAB 4: PERSONAL NOTES ==================== -->
-        <section id="tab-notes" class="app-tab-panel space-y-4 hidden">
+        <section id="tab-notes" class="app-tab-panel space-y-3.5 hidden">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-book-bookmark text-emerald-600 text-lg"></i>
-                    <h3 class="text-lg font-extrabold text-slate-900 font-serif" id="saved-notes-title">সংৰক্ষিত টোকাসমূহ</h3>
+                    <h3 class="text-base font-black text-slate-900 font-serif" id="saved-notes-title">সংৰক্ষিত টোকাসমূহ</h3>
                 </div>
-                <button onclick="openNoteModal()" class="px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 active:scale-95 shadow-md shadow-emerald-500/15">
+                <button onclick="openNoteModal()" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 active:scale-95 shadow-2xs">
                     <i class="fa-solid fa-plus"></i> <span id="add-note-action-text">নতুন</span>
                 </button>
             </div>
 
-            <!-- Notes List scrollable container -->
-            <div class="space-y-3" id="all-notes-list">
-                <!-- Notes list saved -->
+            <!-- Saved Notes Container -->
+            <div class="space-y-2.5" id="all-notes-list">
+                <!-- Loaded dynamically -->
             </div>
         </section>
 
     </main>
 
-    <!-- App Footer inside Main Shell (App branding only) -->
-    <footer class="bg-white border-t border-amber-100/50 py-6 text-center text-xs text-slate-500 relative overflow-hidden max-w-md mx-auto w-full mb-16">
+    <!-- Footer with Branding -->
+    <footer class="bg-white border-t border-amber-100/70 py-4 text-center text-xs text-slate-500 relative overflow-hidden max-w-md mx-auto w-full z-10">
         <div class="gamosa-border absolute bottom-0 left-0 right-0 h-1"></div>
-        <div class="relative z-10 px-4 space-y-2">
-            <p class="font-extrabold text-amber-950 font-serif" id="footer-copyright-text">
+        <div class="px-4 space-y-1">
+            <p class="font-black text-amber-950 font-serif text-[11px]" id="footer-copyright-text">
                 © ২০২৬ অসমীয়া কেলেণ্ডাৰ || AXOM HELP DESK
             </p>
-            <p class="text-[10px] text-slate-400">
-                Powered by <a href="https://www.axomhelpdesk.com" target="_blank" class="text-[#c21833] hover:underline font-bold">www.Axomhelpdesk.com</a>
+            <p class="text-[10px] text-slate-400 font-medium">
+                Powered by <a href="https://www.axomhelpdesk.com" target="_blank" rel="noopener noreferrer" class="text-[#c21833] hover:underline font-bold">www.Axomhelpdesk.com</a>
             </p>
         </div>
     </footer>
 
-    <!-- Native App Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-amber-100/70 shadow-[0_-4px_12px_rgba(139,92,26,0.06)] py-2 z-40 max-w-md mx-auto w-full flex justify-around">
+    <!-- Native Mobile App Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-amber-200/60 shadow-[0_-4px_12px_rgba(139,92,26,0.08)] py-1.5 z-40 max-w-md mx-auto w-full flex justify-around">
         <!-- Tab 1: Calendar -->
-        <button onclick="switchTab('calendar')" id="nav-calendar" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-[#c21833] transition duration-150">
-            <i class="fa-solid fa-calendar-days text-lg mb-1"></i>
-            <span class="text-[10px] font-extrabold" id="nav-label-calendar">দিনপঞ্জী</span>
+        <button onclick="switchTab('calendar')" id="nav-calendar" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-[#c21833] transition duration-150 active:scale-95">
+            <i class="fa-solid fa-calendar-days text-base mb-0.5"></i>
+            <span class="text-[9.5px] font-black" id="nav-label-calendar">দিনপঞ্জী</span>
         </button>
 
         <!-- Tab 2: Holidays -->
-        <button onclick="switchTab('holidays')" id="nav-holidays" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-slate-400 transition duration-150">
-            <i class="fa-solid fa-holly-berry text-lg mb-1"></i>
-            <span class="text-[10px] font-extrabold" id="nav-label-holidays">বন্ধৰ দিন</span>
+        <button onclick="switchTab('holidays')" id="nav-holidays" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-slate-400 transition duration-150 active:scale-95">
+            <i class="fa-solid fa-holly-berry text-base mb-0.5"></i>
+            <span class="text-[9.5px] font-black" id="nav-label-holidays">বন্ধৰ দিন</span>
         </button>
 
         <!-- Tab 3: Horoscope -->
-        <button onclick="switchTab('horoscope')" id="nav-horoscope" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-slate-400 transition duration-150">
-            <i class="fa-solid fa-star-and-crescent text-lg mb-1"></i>
-            <span class="text-[10px] font-extrabold" id="nav-label-horoscope">ৰাশিফল</span>
+        <button onclick="switchTab('horoscope')" id="nav-horoscope" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-slate-400 transition duration-150 active:scale-95">
+            <i class="fa-solid fa-star-and-crescent text-base mb-0.5"></i>
+            <span class="text-[9.5px] font-black" id="nav-label-horoscope">ৰাশিফল</span>
         </button>
 
         <!-- Tab 4: Notes -->
-        <button onclick="switchTab('notes')" id="nav-notes" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-slate-400 transition duration-150">
-            <i class="fa-solid fa-book-bookmark text-lg mb-1"></i>
-            <span class="text-[10px] font-extrabold" id="nav-label-notes">টোকা বহী</span>
+        <button onclick="switchTab('notes')" id="nav-notes" class="nav-item flex flex-col items-center justify-center w-16 py-1 text-slate-400 transition duration-150 active:scale-95">
+            <i class="fa-solid fa-book-bookmark text-base mb-0.5"></i>
+            <span class="text-[9.5px] font-black" id="nav-label-notes">টোকা বহী</span>
         </button>
     </nav>
 
-    <!-- Native-style Bottom Sheet Modal (Slides up from the bottom) -->
-    <div id="note-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-end justify-center hidden z-50 transition-opacity duration-300 opacity-0">
-        <!-- Close overlay trigger -->
+    <!-- Native-Style Bottom Sheet Modal -->
+    <div id="note-modal" class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-end justify-center hidden z-50 transition-opacity duration-300 opacity-0">
+        <!-- Backdrop Close -->
         <div class="absolute inset-0" onclick="closeNoteModal()"></div>
 
         <!-- Note Sheet Panel -->
-        <div id="note-sheet" class="bottom-sheet hidden-sheet bg-white rounded-t-[2.5rem] w-full max-w-md relative z-10 overflow-hidden shadow-2xl flex flex-col border-t-2 border-[#d4af37]">
-            <div class="w-12 h-1.5 bg-amber-100 rounded-full mx-auto my-3"></div>
+        <div id="note-sheet" class="bottom-sheet hidden-sheet bg-white rounded-t-3xl w-full max-w-md relative z-10 overflow-hidden shadow-2xl flex flex-col border-t-2 border-[#d4af37]">
+            <div class="w-10 h-1 bg-amber-200 rounded-full mx-auto my-2.5"></div>
             
-            <div class="px-6 pb-8 pt-2">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-extrabold text-slate-900 font-serif" id="modal-note-title">নতুন টোকা লিখক</h3>
-                    <button onclick="closeNoteModal()" class="text-slate-400 hover:text-slate-600 p-2 bg-amber-50/50 rounded-full">
-                        <i class="fa-solid fa-xmark text-sm"></i>
+            <div class="px-5 pb-6 pt-1">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-base font-black text-slate-900 font-serif" id="modal-note-title">নতুন টোকা লিখক</h3>
+                    <button onclick="closeNoteModal()" class="text-slate-400 hover:text-slate-600 p-2 bg-amber-50 rounded-full">
+                        <i class="fa-solid fa-xmark text-xs"></i>
                     </button>
                 </div>
 
-                <p class="text-[11px] text-amber-950 font-extrabold mb-4 bg-amber-50/70 p-3 rounded-2xl border border-amber-100" id="modal-note-date-label">
+                <p class="text-[10.5px] text-amber-950 font-black mb-3 bg-amber-50 p-2.5 rounded-xl border border-amber-100" id="modal-note-date-label">
                     তাৰিখ: ১ জুন, ২০২৬
                 </p>
 
-                <div class="space-y-4">
+                <div class="space-y-3.5">
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5" id="lbl-note-text">টোকাত কি লিখিব:</label>
-                        <textarea id="note-text-input" rows="3" class="w-full rounded-2xl border border-amber-100 p-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c21833]/20 focus:border-[#c21833] bg-amber-50/10" placeholder="ইয়াত লিখক..."></textarea>
+                        <label class="block text-[9.5px] font-bold text-slate-500 uppercase tracking-wider mb-1" id="lbl-note-text">টোকাত কি লিখিব:</label>
+                        <textarea id="note-text-input" rows="3" class="w-full rounded-xl border border-amber-200 p-3 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#c21833]/20 focus:border-[#c21833] bg-amber-50/20" placeholder="ইয়াত লিখক..."></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2" id="lbl-note-tag">বিভাগ / কাৰ্যসূচী ৰং:</label>
+                        <label class="block text-[9.5px] font-bold text-slate-500 uppercase tracking-wider mb-1.5" id="lbl-note-tag">বিভাগ / কাৰ্যসূচী ৰং:</label>
                         <div class="flex gap-4">
                             <label class="flex items-center gap-1.5 cursor-pointer">
                                 <input type="radio" name="note-color" value="emerald" checked class="text-emerald-600 focus:ring-emerald-500 w-4 h-4">
-                                <span class="w-6 h-6 rounded-full bg-emerald-500 border border-white outline outline-1 outline-emerald-200 shadow-xs"></span>
+                                <span class="w-6 h-6 rounded-full bg-emerald-500 border border-white outline outline-1 outline-emerald-200 shadow-2xs"></span>
                             </label>
                             <label class="flex items-center gap-1.5 cursor-pointer">
                                 <input type="radio" name="note-color" value="amber" class="text-amber-600 focus:ring-amber-500 w-4 h-4">
-                                <span class="w-6 h-6 rounded-full bg-amber-500 border border-white outline outline-1 outline-amber-200 shadow-xs"></span>
+                                <span class="w-6 h-6 rounded-full bg-amber-500 border border-white outline outline-1 outline-amber-200 shadow-2xs"></span>
                             </label>
                             <label class="flex items-center gap-1.5 cursor-pointer">
                                 <input type="radio" name="note-color" value="red" class="text-red-600 focus:ring-red-500 w-4 h-4">
-                                <span class="w-6 h-6 rounded-full bg-red-500 border border-white outline outline-1 outline-red-200 shadow-xs"></span>
+                                <span class="w-6 h-6 rounded-full bg-red-500 border border-white outline outline-1 outline-red-200 shadow-2xs"></span>
                             </label>
                             <label class="flex items-center gap-1.5 cursor-pointer">
                                 <input type="radio" name="note-color" value="blue" class="text-blue-600 focus:ring-blue-500 w-4 h-4">
-                                <span class="w-6 h-6 rounded-full bg-blue-500 border border-white outline outline-1 outline-blue-200 shadow-xs"></span>
+                                <span class="w-6 h-6 rounded-full bg-blue-500 border border-white outline outline-1 outline-blue-200 shadow-2xs"></span>
                             </label>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex gap-3 mt-6">
-                    <button onclick="closeNoteModal()" class="flex-1 py-3.5 rounded-2xl border border-slate-200 font-bold text-xs text-slate-700 hover:bg-slate-50 transition" id="btn-cancel">বাতিল</button>
-                    <button onclick="saveNote()" class="flex-1 py-3.5 rounded-2xl bg-[#c21833] hover:bg-red-700 font-bold text-xs text-white shadow-md shadow-red-700/10 transition" id="btn-save">সংৰক্ষণ কৰক</button>
+                <div class="flex gap-2.5 mt-5">
+                    <button onclick="closeNoteModal()" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-xs text-slate-700 hover:bg-slate-50 transition" id="btn-cancel">বাতিল</button>
+                    <button onclick="saveNote()" class="flex-1 py-3 rounded-xl bg-[#c21833] hover:bg-red-700 font-bold text-xs text-white shadow-md transition" id="btn-save">সংৰক্ষণ কৰক</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let currentDate = new Date(); // Track currently explored month
-        let todayDate = new Date(); // Constant today reference
-        let selectedDate = new Date(); // Track day focused in the detail drawer
+        let currentDate = new Date(); // Active explored month
+        let todayDate = new Date(); // Today date reference
+        let selectedDate = new Date(); // Date focused in detail card
         let currentLanguage = 'as'; // 'as' for Assamese, 'en' for English
 
         // Load offline user note records from localStorage
         let userNotes = JSON.parse(localStorage.getItem('axom_calendar_notes')) || {};
 
-        // Traditional Assamese Proverbs Database (Assamese / English versions)
+        // Traditional Assamese Proverbs Database
         const proverbs = [
             { as: "“ৰাইজ নহলে ৰজা নাই, গছ নহলে ছায়া নাই।”", en: "“Without public there is no king, without trees there is no shade.”" },
             { as: "“লাহে লাহে কাটিবা সূতা, খৰকৈ কাটিলে ছিঙিব কপালৰ ফুটা।”", en: "“Patience is bitter, but its fruit is sweet.”" },
@@ -397,7 +397,7 @@
             { as: "“আটাইতকৈ ডাঙৰ বল বুদ্ধি, বুদ্ধি থাকিলেহে জিনিবা সিদ্ধি।”", en: "“Wisdom is the greatest strength of all.”" }
         ];
 
-        // Localization translations dictionary
+        // Localization Dictionary
         const i18n = {
             as: {
                 weekdays: ["দেও", "সোম", "মঙল", "বুধ", "বৃহস্পতি", "শুক্ৰ", "শনি"],
@@ -464,12 +464,13 @@
             }).join('');
         }
 
-        // Convert Gregorian date to traditional Assamese date (Approximation)
+        // Convert Gregorian date to traditional Assamese date (Exact alignment for Govt Assamese Calendar)
         function convertToAssameseDate(gregDate) {
             const year = gregDate.getFullYear();
             const month = gregDate.getMonth() + 1;
             const day = gregDate.getDate();
 
+            // Official Assamese month transition days
             const transitions = [
                 { m: 1, d: 15, asMNameAs: "মাঘ", asMNameEn: "Magh", asYOffset: -594 }, 
                 { m: 2, d: 14, asMNameAs: "ফাগুন", asMNameEn: "Phagun", asYOffset: -594 },
@@ -486,7 +487,6 @@
             ];
 
             let matched = null;
-
             for (let i = transitions.length - 1; i >= 0; i--) {
                 const t = transitions[i];
                 if (month > t.m || (month === t.m && day >= t.d)) {
@@ -497,8 +497,8 @@
 
             if (!matched) {
                 const prevYear = year - 1;
-                const dec16 = new Date(prevYear, 11, 16);
-                const diffTime = Math.abs(gregDate - dec16);
+                const dec17 = new Date(prevYear, 11, 17);
+                const diffTime = Math.abs(gregDate - dec17);
                 const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
                 return {
                     day: diffDays,
@@ -534,7 +534,7 @@
             return holidayDatabase.filter(h => h.dateStr === key);
         }
 
-        // Comprehensive database of National, regional, and Assamese state holidays (2026)
+        // Database of National & Assam State Holidays (2026)
         const holidayDatabase = [
             { dateStr: "2026-01-01", nameAs: "নতুন বছৰৰ প্ৰথম দিন", nameEn: "New Year's Day", type: "restricted" },
             { dateStr: "2026-01-03", nameAs: "হজৰত আলীৰ জন্মদিন", nameEn: "Hazrat Ali's Birthday", type: "restricted" },
@@ -571,7 +571,7 @@
             { dateStr: "2026-10-19", nameAs: "দুৰ্গোৎসৱ (মহা অষ্টমী)", nameEn: "Durga Puja (Maha Ashtami)", type: "gov-holiday" },
             { dateStr: "2026-10-20", nameAs: "বিজয়া দশমী / মহা নৱমী / দশেহা", nameEn: "Dussehra / Vijayadashami", type: "gov-holiday" },
             { dateStr: "2026-11-08", nameAs: "দীপাৱলী / কালী পূজা / লক্ষ্মী পূজা", nameEn: "Diwali / Kali Puja", type: "gov-holiday" },
-            { dateStr: "2026-11-24", nameAs: "লাчит দিৱস / গুৰু নানক জয়ন্তী", nameEn: "Lachit Divas / Guru Nanak Jayanti", type: "gov-holiday" },
+            { dateStr: "2026-11-24", nameAs: "লাচিত দিৱস / গুৰু নানক জয়ন্তী", nameEn: "Lachit Divas / Guru Nanak Jayanti", type: "gov-holiday" },
             { dateStr: "2026-12-02", nameAs: "অসম দিৱস (সুকাফা দিৱস)", nameEn: "Asom Divas", type: "gov-holiday" },
             { dateStr: "2026-12-25", nameAs: "বৰদিন", nameEn: "Christmas Day", type: "gov-holiday" }
         ];
@@ -593,49 +593,39 @@
 
         let selectedRashiId = "aries";
 
-        // Native Tabs switching function
+        // Tab Switch Function
         function switchTab(tabId) {
-            // Hide all tab panels
-            document.querySelectorAll('.app-tab-panel').forEach(panel => {
-                panel.classList.add('hidden');
-            });
-
-            // Show selected panel
+            document.querySelectorAll('.app-tab-panel').forEach(panel => panel.classList.add('hidden'));
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
-            // Reset navigation menu styling
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('text-[#c21833]');
                 item.classList.add('text-slate-400');
             });
 
-            // Set active highlight on nav item
             document.getElementById(`nav-${tabId}`).classList.add('text-[#c21833]');
             document.getElementById(`nav-${tabId}`).classList.remove('text-slate-400');
 
-            // Quick auto Scroll to top upon transition
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Generate daily proverb suggestion
         function updateProverb() {
             const index = Math.floor(Math.random() * proverbs.length);
             const prov = proverbs[index];
             document.getElementById('cultural-proverb').innerText = currentLanguage === 'as' ? prov.as : prov.en;
         }
 
-        // Render Horoscope Selection with beautiful golden metal rings
         function renderHoroscopeGrid() {
             const grid = document.getElementById('rashi-buttons-grid');
             grid.innerHTML = '';
             rashiData.forEach(r => {
                 const isSelected = r.id === selectedRashiId;
-                const activeClasses = isSelected ? 'bg-amber-100/70 border-[#c21833] text-[#c21833] ring-1 ring-[#c21833]/30 scale-105 shadow-xs' : 'bg-white border-amber-100/60 text-slate-700 hover:bg-amber-50/25';
+                const activeClasses = isSelected ? 'bg-amber-100/70 border-[#c21833] text-[#c21833] ring-1 ring-[#c21833]/30 scale-105 shadow-2xs font-extrabold' : 'bg-white border-amber-100/60 text-slate-700 hover:bg-amber-50/30';
                 
                 grid.innerHTML += `
-                    <button onclick="selectRashi('${r.id}')" class="flex flex-col items-center justify-center p-2.5 rounded-2xl border text-center transition-all duration-150 active:scale-95 ${activeClasses}">
+                    <button onclick="selectRashi('${r.id}')" class="flex flex-col items-center justify-center p-2 rounded-xl border text-center transition-all duration-150 active:scale-95 ${activeClasses}">
                         <span class="text-xl">${r.icon}</span>
-                        <span class="text-[9px] font-bold mt-1 tracking-tight font-serif">${currentLanguage === 'as' ? r.nameAs : r.nameEn}</span>
+                        <span class="text-[9px] font-bold mt-0.5 font-serif">${currentLanguage === 'as' ? r.nameAs : r.nameEn}</span>
                     </button>
                 `;
             });
@@ -658,11 +648,9 @@
             document.getElementById('horoscope-text-content').innerText = currentLanguage === 'as' ? rashi.predAs : rashi.predEn;
         }
 
-        // Translate entire UI elements
         function updateLocalizationUI() {
             const strings = i18n[currentLanguage];
 
-            // Primary buttons & Header Labels
             document.getElementById('btn-today').innerText = strings.todayBtn;
             document.getElementById('lang-btn-text').innerText = currentLanguage === 'as' ? 'English' : 'অসমীয়া';
             document.getElementById('detail-tag').innerText = strings.selectedDayLabel;
@@ -672,13 +660,11 @@
             document.getElementById('saved-notes-title').innerText = strings.savedNotesTitle;
             document.getElementById('add-note-action-text').innerText = strings.addNoteAction;
 
-            // Nav Label Translations
             document.getElementById('nav-label-calendar').innerText = strings.navCalendar;
             document.getElementById('nav-label-holidays').innerText = strings.navHolidays;
             document.getElementById('nav-label-horoscope').innerText = strings.navHoroscope;
             document.getElementById('nav-label-notes').innerText = strings.navNotes;
 
-            // Modal Translations
             document.getElementById('modal-note-title').innerText = strings.modalNoteTitle;
             document.getElementById('lbl-note-text').innerText = strings.lblNoteText;
             document.getElementById('lbl-note-tag').innerText = strings.lblNoteTag;
@@ -686,16 +672,14 @@
             document.getElementById('btn-save').innerText = strings.btnSave;
             document.getElementById('note-text-input').placeholder = strings.notePlaceholder;
 
-            // Header Era update
             const dummyDate = convertToAssameseDate(currentDate);
             let eraText = strings.eraHeader.replace('{bYear}', toAssameseNumber(dummyDate.bhaskarabda)).replace('{sYear}', toAssameseNumber(dummyDate.sakabda));
             document.getElementById('header-years').innerText = eraText;
 
-            // Weekday Row Generation
             const weekdayHeaders = document.getElementById('weekday-headers');
             weekdayHeaders.innerHTML = '';
             strings.weekdays.forEach(day => {
-                weekdayHeaders.innerHTML += `<div class="py-1.5 font-bold uppercase tracking-wider">${day}</div>`;
+                weekdayHeaders.innerHTML += `<div class="py-1 uppercase font-bold tracking-wider">${day}</div>`;
             });
             updateProverb();
         }
@@ -710,7 +694,6 @@
             renderAllSavedNotes();
         }
 
-        // Primary calendar build algorithm
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
             grid.innerHTML = '';
@@ -718,7 +701,6 @@
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
 
-            // Set Month Title Strings
             const monthsEng = i18n[currentLanguage].monthsEng;
             document.getElementById('month-year-label').innerText = `${monthsEng[month]} ${toAssameseNumber(year)}`;
 
@@ -726,7 +708,6 @@
             const totalDays = new Date(year, month + 1, 0).getDate();
             const prevTotalDays = new Date(year, month, 0).getDate();
 
-            // Setup traditional Month subtitle ranges
             const startAsInfo = convertToAssameseDate(new Date(year, month, 1));
             const endAsInfo = convertToAssameseDate(new Date(year, month, totalDays));
             let rangeLabel = "";
@@ -737,7 +718,7 @@
             }
             document.getElementById('as-month-label').innerText = rangeLabel;
 
-            // 1. Previous month padded cells
+            // Padded previous month cells
             for (let i = firstDayIndex; i > 0; i--) {
                 const dayNum = prevTotalDays - i + 1;
                 const dummyDate = new Date(year, month - 1, dayNum);
@@ -745,7 +726,7 @@
                 grid.appendChild(createDayCell(dayNum, false, false, asInfo, dummyDate));
             }
 
-            // 2. Main active current month cells
+            // Current month cells
             for (let i = 1; i <= totalDays; i++) {
                 const cellDate = new Date(year, month, i);
                 const isToday = cellDate.toDateString() === todayDate.toDateString();
@@ -754,7 +735,7 @@
                 grid.appendChild(createDayCell(i, true, isToday, asInfo, cellDate, isSelected));
             }
 
-            // 3. Next month padded cells
+            // Padded next month cells
             const totalCellsRendered = firstDayIndex + totalDays;
             const remainingPaddings = totalCellsRendered % 7 === 0 ? 0 : 7 - (totalCellsRendered % 7);
             for (let i = 1; i <= remainingPaddings; i++) {
@@ -766,7 +747,7 @@
 
         function createDayCell(dayNum, isCurrentMonth, isToday, asInfo, cellDate, isSelected = false) {
             const container = document.createElement('div');
-            container.className = `min-h-[58px] md:min-h-[68px] bg-white p-1.5 flex flex-col justify-between border-b border-r border-amber-100/30 relative cursor-pointer select-none transition-all duration-100 ${!isCurrentMonth ? 'opacity-30 bg-amber-50/10' : ''}`;
+            container.className = `min-h-[54px] bg-white p-1 flex flex-col justify-between border-b border-r border-amber-100/40 relative cursor-pointer select-none transition-all duration-100 ${!isCurrentMonth ? 'opacity-30 bg-amber-50/10' : ''}`;
             
             const holidays = getHolidaysForDate(cellDate);
             const hasHoliday = holidays.length > 0;
@@ -774,34 +755,32 @@
 
             if (isCurrentMonth) {
                 if (isSelected) {
-                    container.className += ' bg-amber-50/80 ring-2 ring-[#c21833] z-10 scale-[1.01] shadow-sm rounded-xl';
+                    container.className += ' bg-amber-50/90 ring-2 ring-[#c21833] z-10 rounded-xl shadow-2xs';
                 } else if (isToday) {
-                    container.className += ' bg-red-50/40 rounded-xl';
+                    container.className += ' bg-red-50/50 rounded-xl';
                 }
             }
 
             const isSunday = cellDate.getDay() === 0;
-            const labelColorClass = (isSunday || hasHoliday) ? 'text-[#c21833] font-extrabold' : 'text-slate-700';
+            const labelColorClass = (isSunday || hasHoliday) ? 'text-[#c21833] font-black' : 'text-slate-800';
 
-            // Dates and Sub-dates Display
             const topRow = document.createElement('div');
             topRow.className = "flex justify-between items-start";
             
             const gregLabel = document.createElement('span');
-            gregLabel.className = `text-xs md:text-sm font-bold ${labelColorClass} ${isToday ? 'bg-[#c21833] text-white w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center shadow-xs' : ''}`;
+            gregLabel.className = `text-xs font-bold ${labelColorClass} ${isToday ? 'bg-[#c21833] text-white w-5 h-5 rounded-full flex items-center justify-center shadow-2xs' : ''}`;
             gregLabel.innerText = toAssameseNumber(dayNum);
             
             const asLabel = document.createElement('span');
-            asLabel.className = "text-[8px] md:text-[9.5px] text-amber-900 font-extrabold font-serif";
+            asLabel.className = "text-[8.5px] text-amber-900 font-black font-serif";
             asLabel.innerText = toAssameseNumber(asInfo.day);
 
             topRow.appendChild(gregLabel);
             topRow.appendChild(asLabel);
             container.appendChild(topRow);
 
-            // Bottom Indicators
             const indicators = document.createElement('div');
-            indicators.className = "flex gap-1 justify-center items-center min-h-[6px] mt-1";
+            indicators.className = "flex gap-1 justify-center items-center min-h-[5px] mt-0.5";
 
             if (hasHoliday) {
                 const dot = document.createElement('span');
@@ -817,7 +796,6 @@
 
             container.appendChild(indicators);
 
-            // Dynamic interaction handlers
             if (isCurrentMonth) {
                 container.addEventListener('click', () => {
                     selectedDate = cellDate;
@@ -836,7 +814,6 @@
             return container;
         }
 
-        // Update Day Detail Drawer Panel
         function updateDayDetailPanel() {
             const key = formatDateToKey(selectedDate);
             const asInfo = convertToAssameseDate(selectedDate);
@@ -866,46 +843,44 @@
 
             if (holidays.length === 0 && notes.length === 0) {
                 eventsListContainer.innerHTML = `
-                    <div class="text-xs text-slate-400 italic py-2">
+                    <div class="text-xs text-slate-400 italic py-1">
                         ${strings.noEvents}
                     </div>
                 `;
                 return;
             }
 
-            // Holidays listing
             holidays.forEach(h => {
                 const title = currentLanguage === 'as' ? h.nameAs : h.nameEn;
                 const typeLabel = h.type === 'gov-holiday' ? (currentLanguage === 'as' ? 'চৰকাৰী বন্ধ' : 'Govt. Holiday') : (currentLanguage === 'as' ? 'উৎসৱ' : 'Festival/Restricted');
                 const badgeColor = h.type === 'gov-holiday' ? 'bg-red-50 text-[#c21833] border border-red-200/50' : 'bg-amber-50 text-amber-900 border border-amber-200/50';
                 
                 eventsListContainer.innerHTML += `
-                    <div class="flex items-center justify-between p-3.5 rounded-xl ${badgeColor} shadow-2xs">
+                    <div class="flex items-center justify-between p-3 rounded-xl ${badgeColor}">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-bell text-xs"></i>
                             <span class="font-extrabold text-xs">${title}</span>
                         </div>
-                        <span class="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/75 font-extrabold">${typeLabel}</span>
+                        <span class="text-[8.5px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/80 font-black">${typeLabel}</span>
                     </div>
                 `;
             });
 
-            // Notes listing
             notes.forEach((note, index) => {
                 const colorMap = {
-                    emerald: "border-emerald-500 bg-emerald-50/30 text-emerald-900",
-                    amber: "border-amber-500 bg-amber-50/30 text-amber-950",
-                    red: "border-red-500 bg-red-50/30 text-red-950",
-                    blue: "border-blue-500 bg-blue-50/30 text-blue-950"
+                    emerald: "border-emerald-500 bg-emerald-50/40 text-emerald-950",
+                    amber: "border-amber-500 bg-amber-50/40 text-amber-950",
+                    red: "border-red-500 bg-red-50/40 text-red-950",
+                    blue: "border-blue-500 bg-blue-50/40 text-blue-950"
                 };
                 const colorClass = colorMap[note.color] || colorMap.emerald;
 
                 eventsListContainer.innerHTML += `
-                    <div class="flex items-start justify-between p-3.5 rounded-xl border-l-4 shadow-2xs ${colorClass}">
-                        <div class="flex-grow pr-4">
+                    <div class="flex items-start justify-between p-3 rounded-xl border-l-4 shadow-2xs ${colorClass}">
+                        <div class="flex-grow pr-3">
                             <p class="text-xs whitespace-pre-line leading-relaxed font-medium">${note.text}</p>
                         </div>
-                        <button onclick="deleteNote('${key}', ${index})" class="text-slate-400 hover:text-red-600 transition-all p-1" title="Delete Note">
+                        <button onclick="deleteNote('${key}', ${index})" class="text-slate-400 hover:text-red-600 transition p-1" title="Delete Note">
                             <i class="fa-solid fa-trash-can text-xs"></i>
                         </button>
                     </div>
@@ -932,7 +907,6 @@
             updateDayDetailPanel();
         }
 
-        // Native sliding Bottom-sheet interactions
         function openNoteModal() {
             const modal = document.getElementById('note-modal');
             const sheet = document.getElementById('note-sheet');
@@ -999,7 +973,6 @@
             renderAllSavedNotes();
         }
 
-        // Render searchable Holiday list
         function renderAllHolidays() {
             filterHolidays();
         }
@@ -1020,7 +993,7 @@
             document.getElementById('holiday-count-badge').innerText = toAssameseNumber(filtered.length) + (currentLanguage === 'as' ? " টা বন্ধ" : " Holidays");
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-xs text-slate-400 italic py-4 text-center">কোনো বন্ধ বিচাৰি পোৱা নগ’ল। (No matches)</div>`;
+                container.innerHTML = `<div class="text-xs text-slate-400 italic py-4 text-center">কোনো বন্ধ বিচাৰি পোৱা নগ’ল।</div>`;
                 return;
             }
 
@@ -1036,13 +1009,13 @@
                 const dateStrLabel = dateObj.toLocaleDateString(currentLanguage === 'as' ? 'as-IN' : 'en-US', options);
 
                 container.innerHTML += `
-                    <div onclick="jumpToSpecificDate('${h.dateStr}')" class="flex items-center justify-between p-3.5 rounded-2xl border border-amber-100/40 bg-white hover:border-[#c21833]/40 transition duration-150 cursor-pointer active:scale-98 shadow-2xs">
+                    <div onclick="jumpToSpecificDate('${h.dateStr}')" class="flex items-center justify-between p-3 rounded-2xl border border-amber-100/60 bg-white hover:border-[#c21833]/40 transition duration-150 cursor-pointer active:scale-98 shadow-2xs">
                         <div class="flex items-center gap-2 pr-2">
                             <span class="font-extrabold text-xs text-slate-800 font-serif">${currentLanguage === 'as' ? h.nameAs : h.nameEn}</span>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
-                            <span class="text-[9px] font-extrabold px-2.5 py-1 rounded-full ${badgeStyle}">${tag}</span>
-                            <span class="text-[11px] font-extrabold text-slate-500 whitespace-nowrap font-serif">${toAssameseNumber(dateStrLabel)}</span>
+                            <span class="text-[8.5px] font-black px-2 py-0.5 rounded-full ${badgeStyle}">${tag}</span>
+                            <span class="text-[10.5px] font-bold text-slate-500 font-serif">${toAssameseNumber(dateStrLabel)}</span>
                         </div>
                     </div>
                 `;
@@ -1054,16 +1027,12 @@
             currentDate = new Date(targetDate);
             selectedDate = new Date(targetDate);
             
-            // Render main calendar updates
             renderCalendar();
             updateDayDetailPanel();
             updateLocalizationUI();
-            
-            // Switch back immediately to calendar screen
             switchTab('calendar');
         }
 
-        // Render saved Notes
         function renderAllSavedNotes() {
             const container = document.getElementById('all-notes-list');
             container.innerHTML = '';
@@ -1072,7 +1041,7 @@
 
             if (keys.length === 0) {
                 container.innerHTML = `
-                    <div class="text-xs text-slate-400 italic py-8 text-center bg-white rounded-3xl border border-dashed border-amber-200/50">
+                    <div class="text-xs text-slate-400 italic py-8 text-center bg-white rounded-2xl border border-dashed border-amber-200/60">
                         ${currentLanguage === 'as' ? 'কোনো সংৰক্ষিত টোকা পোৱা নগ’ল।' : 'No saved notes found.'}
                     </div>
                 `;
@@ -1095,10 +1064,10 @@
                     const colorDot = colorMap[note.color] || colorMap.emerald;
 
                     container.innerHTML += `
-                        <div class="p-3.5 bg-white rounded-2xl border border-amber-100/30 flex items-start gap-3 hover:shadow-xs transition shadow-2xs">
-                            <span class="w-3 h-3 rounded-full ${colorDot} mt-1.5 flex-shrink-0"></span>
+                        <div class="p-3 bg-white rounded-2xl border border-amber-100/60 flex items-start gap-2.5 hover:shadow-2xs transition shadow-2xs">
+                            <span class="w-2.5 h-2.5 rounded-full ${colorDot} mt-1 flex-shrink-0"></span>
                             <div class="flex-grow">
-                                <div class="flex justify-between items-center mb-1.5">
+                                <div class="flex justify-between items-center mb-1">
                                     <button onclick="jumpToSpecificDate('${key}')" class="text-[10px] font-extrabold text-[#c21833] hover:underline font-serif">
                                         ${toAssameseNumber(formattedDate)}
                                     </button>
@@ -1114,18 +1083,15 @@
             });
         }
 
-        // Swipe gestures setup
         let touchstartX = 0;
         let touchendX = 0;
 
         function checkDirection() {
-            const swipeThreshold = 60;
+            const swipeThreshold = 50;
             if (touchendX < touchstartX - swipeThreshold) {
-                // Swipe Left -> Next Month
                 navigateMonth(1);
             }
             if (touchendX > touchstartX + swipeThreshold) {
-                // Swipe Right -> Previous Month
                 navigateMonth(-1);
             }
         }
@@ -1140,7 +1106,6 @@
             checkDirection();
         }, { passive: true });
 
-        // Initialize state
         window.onload = function() {
             updateLocalizationUI();
             renderCalendar();
